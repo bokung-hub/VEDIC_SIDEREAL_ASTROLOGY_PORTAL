@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>印度占星 27宿大運與擇時卜卦系統整合指南</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-gold: #f59e0b;
+            --accent-blue: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --table-hover: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0 30px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--accent-gold);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .section-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--accent-blue);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--accent-blue);
+            padding-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: var(--table-hover);
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+            margin-top: 15px;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 18px;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 34px;
+            height: 34px;
+            background-color: var(--accent-gold);
+            color: #000;
+            font-weight: bold;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+
+        .step-title {
+            font-weight: bold;
+            color: var(--accent-gold);
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .badge-ketu { background-color: #ef4444; color: #fff; }
+        .badge-venus { background-color: #ec4899; color: #fff; }
+        .badge-sun { background-color: #f59e0b; color: #000; }
+        .badge-moon { background-color: #e2e8f0; color: #000; }
+        .badge-mars { background-color: #dc2626; color: #fff; }
+        .badge-rahu { background-color: #8b5cf6; color: #fff; }
+        .badge-jupiter { background-color: #eab308; color: #000; }
+        .badge-saturn { background-color: #64748b; color: #fff; }
+        .badge-mercury { background-color: #10b981; color: #fff; }
+
+        .formula-box {
+            background-color: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--accent-gold);
+            padding: 12px 18px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 1rem;
+            color: #fde68a;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .grid-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .grid-card h4 {
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            header h1 { font-size: 1.6rem; }
+            th, td { padding: 8px 10px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>印度占星 27宿大運與擇時卜卦系統指南</h1>
+        <p>Vimshottari Dasha 大運演算法則與 Muhurta / Prashna 實戰指引</p>
+    </header>
+
+    <!-- 第一部分：九曜固定順序與大運年數 -->
+    <div class="section-card">
+        <h2 class="section-title">一、印占九曜固定順序與大運年數（Vimshottari Dasha）</h2>
+        <p>薇姆修達里大運總週期為 <strong>120 年</strong>，九曜按照固定順序輪流掌管，27 宿依此順序重複循環分配 3 輪。</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>順序</th>
+                    <th>星體（九曜）</th>
+                    <th>掌管年數</th>
+                    <th>包含之 27 星宿（每輪 9 宿）</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td><span class="badge badge-ketu">計都 Ketu</span></td>
+                    <td><strong>7 年</strong></td>
+                    <td>1. 奇角宿 (Ashvini) | 10. 家屋宿 (Magha) | 19. 磨羯宿 (Mula)</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td><span class="badge badge-venus">金星 Venus</span></td>
+                    <td><strong>20 年</strong></td>
+                    <td>2. 帶路宿 (Bharani) | 11. 前德宿 (Purva Phalguni) | 20. 前勝宿 (Purva Ashadha)</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td><span class="badge badge-sun">太陽 Sun</span></td>
+                    <td><strong>6 年</strong></td>
+                    <td>3. 昴宿 (Krittika) | 12. 後德宿 (Uttara Phalguni) | 21. 後勝宿 (Uttara Ashadha)</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><span class="badge badge-moon">月亮 Moon</span></td>
+                    <td><strong>10 年</strong></td>
+                    <td>4. 畢宿 (Rohini) | 13. 手宿 (Hasta) | 22. 聽宿 (Shravana)</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><span class="badge badge-mars">火星 Mars</span></td>
+                    <td><strong>7 年</strong></td>
+                    <td>5. 觜宿 (Mrigashira) | 14. 角宿 (Chitra) | 23. 富宿 (Dhanishta)</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td><span class="badge badge-rahu">羅睺 Rahu</span></td>
+                    <td><strong>18 年</strong></td>
+                    <td>6. 參宿 (Ardra) | 15. 亢宿 (Swati) | 24. 百藥宿 (Shatabhisha)</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td><span class="badge badge-jupiter">木星 Jupiter</span></td>
+                    <td><strong>16 年</strong></td>
+                    <td>7. 井宿 (Punarvasu) | 16. 氐宿 (Vishakha) | 25. 前命宿 (Purva Bhadrapada)</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td><span class="badge badge-saturn">土星 Saturn</span></td>
+                    <td><strong>19 年</strong></td>
+                    <td>8. 鬼宿 (Pushya) | 17. 心宿 (Anuradha) | 26. 後命宿 (Uttara Bhadrapada)</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td><span class="badge badge-mercury">水星 Mercury</span></td>
+                    <td><strong>17 年</strong></td>
+                    <td>9. 柳宿 (Ashlesha) | 18. 尾宿 (Jyeshtha) | 27. 雙魚宿 (Revati)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 第二部分：27宿大運計算步驟 -->
+    <div class="section-card">
+        <h2 class="section-title">二、27 宿大運（Vimshottari Dasha）推算標準步驟</h2>
+        
+        <div class="formula-box">
+            基本核心公式：<br>
+            每一宿總長度 = 13°20' = 800 角分 (')<br>
+            第一步大運剩餘年數 = 該星大運總年數 × [(800' - 星宿內已走角分) / 800']
+        </div>
+
+        <ol class="step-list">
+            <li>
+                <div class="step-title">定位月亮之恆星制黃道位置</div>
+                <p>取得命主出生時的精確時間與地點，使用恆星制（Sidereal Zodiac / Lahiri Ayanamsa）算出月亮的黃道總度數（0°~360°）。</p>
+            </li>
+            <li>
+                <div class="step-title">確定月亮所在星宿與起運主星</div>
+                <p>將月亮總度數除以 13°20'（13.3333°），確定落在 27 宿中的哪一宿，並對照上表找出該宿的守護星（即為人生第一步大運的主星）。</p>
+            </li>
+            <li>
+                <div class="step-title">計算宿內已走度數與剩餘度數</div>
+                <p>扣除該星宿的起始度數，求出月亮在該宿內已經走了多少度分，並換算為「角分」（1° = 60'）。<br>
+                <code>剩餘角分 = 800' - 已走角分</code></p>
+            </li>
+            <li>
+                <div class="step-title">按比例折算第一步大運剩餘時間</div>
+                <p>將剩餘角分帶入公式折算小數年，再將小數轉換為「幾年、幾個月、幾天」。</p>
+            </li>
+            <li>
+                <div class="step-title">依九曜固定順序排列後續大運</div>
+                <p>第一步大運結束後，依據「計都 → 金星 → 太陽 → 月亮 → 火星 → 羅睺 → 木星 → 土星 → 水星」的固定順序，依序接續排滿後續大運。</p>
+            </li>
+        </ol>
+    </div>
+
+    <!-- 第三部分：27宿擇時 (Muhurta) 步驟 -->
+    <div class="section-card">
+        <h2 class="section-title">三、27 宿擇時（Muhurta）標準步驟</h2>
+        <p>擇日/擇時旨在選擇有利的星宿與天象，以確保特定行動（如開業、結婚、搬遷、求醫）獲得吉利能量。</p>
+
+        <ol class="step-list">
+            <li>
+                <div class="step-title">明確事項屬性與目的</div>
+                <p>釐清預定進行的事件屬於動態（如出行、談判）、靜態（如建房、入厝）、柔和（如婚嫁、藝術）還是剛烈（如手術、訴訟）。</p>
+            </li>
+            <li>
+                <div class="step-title">對照 27 宿七大性質分類選宿</div>
+                <div class="grid-2">
+                    <div class="grid-card">
+                        <h4>恆常宿 (Fixed / Dhruva)</h4>
+                        <p><strong>星宿：</strong> 昴、後德、後勝、後命</p>
+                        <p><strong>宜：</strong> 奠基、建房、開張、長期事業。</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4>移動宿 (Movable / Chara)</h4>
+                        <p><strong>星宿：</strong> 井、亢、富、百藥、雙魚</p>
+                        <p><strong>宜：</strong> 出行、買車、旅遊、變動事項。</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4>輕快宿 (Swift / Kshipra)</h4>
+                        <p><strong>星宿：</strong> 奇角、帶路、手</p>
+                        <p><strong>宜：</strong> 買賣、簽約、醫療取藥、借貸。</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4>柔和宿 (Tender / Mridu)</h4>
+                        <p><strong>星宿：</strong> 畢、觜、角、心</p>
+                        <p><strong>宜：</strong> 婚嫁、穿新衣、交友、藝術創作。</p>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="step-title">核算命主的「九運星強度（Tara Bala）」</div>
+                <p>以命主本命月亮星宿為第 1 宿，順數至擇日當天的月亮星宿，計算距離 $N$，除以 9 取餘數：</p>
+                <ul>
+                    <li><strong>吉數：</strong> 2 (財運), 4 (安康), 6 (成就), 8 (貴人), 9/0 (極吉)</li>
+                    <li><strong>凶數：</strong> 1 (本命/平), 3 (障礙/避用), 5 (障礙/避用), 7 (危難/大凶)</li>
+                </ul>
+            </li>
+            <li>
+                <div class="step-title">結合 Panchanga 五曜原則驗證</div>
+                <p>確認當天的 Tithi（農曆日相）、Vara（星期幾）、Yoga 與 Karana，確保無重大凶格。</p>
+            </li>
+            <li>
+                <div class="step-title">避開重大煞位（Ganda Moola & Rahu Kalam）</div>
+                <p>絕對避開星宿交界度數（Ganda Moola：柳尾雙魚與奇角家屋磨羯之交界），以及當天的「羅睺時（Rahu Kalam）」。</p>
+            </li>
+        </ol>
+    </div>
+
+    <!-- 第四部分：27宿卜卦 (Prashna) 步驟 -->
+    <div class="section-card">
+        <h2 class="section-title">四、27 宿卜卦（Prashna）標準步驟</h2>
+        <p>當求問者提出明確疑問時，以「發問瞬間與地點」起盤，分析事情演變與應驗時間。</p>
+
+        <ol class="step-list">
+            <li>
+                <div class="step-title">記錄精確時間地點並繪製卜卦盤</div>
+                <p>以占卜師收到問題並完全理解疑問的精確時間、所在地理座標起盤（採用 Sidereal 恆星制）。</p>
+            </li>
+            <li>
+                <div class="step-title">評估上升宮（Lagna）與上升主星</div>
+                <p>上升宮代表問者本人與當下的狀態。上升主星落宮、受克或受吉星照耀，反應問者的誠意與問題的真偽。</p>
+            </li>
+            <li>
+                <div class="step-title">分析月亮落宿與宿主（核心心態與事件焦點）</div>
+                <p>月亮是卜卦盤的靈魂。月亮落入的星宿（Nakshatra）及其守護星，直接揭示問者心中「最關切的核心問題」與情緒動態。</p>
+            </li>
+            <li>
+                <div class="step-title">檢視所問事項之徵驗星（Karaka）與徵驗宮</div>
+                <p>感情看 7 宮/金星，事業看 10 宮/太陽/木星，財運看 2 宮/11 宮/木星。檢查徵驗星與上升主星/月亮是否有吉利相位或同宮。</p>
+            </li>
+            <li>
+                <div class="step-title">利用卜卦大運（Prashna Dasha）推算應驗時間</div>
+                <p>以卜卦盤中月亮的度數，同樣計算出當下的 Vimshottari Dasha，用於精確推算事件爆發或解決的應驗時間點（Timing of Event）。</p>
+            </li>
+        </ol>
+    </div>
+
+    <footer>
+        <p>27宿恆星制占星九曜108足程式 — 系統對照手冊</p>
+    </footer>
+</div>
+
+</body>
+</html>

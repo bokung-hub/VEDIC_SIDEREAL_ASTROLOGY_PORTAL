@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>印度占星 · 27宿與九曜恆星制系統整合中心</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #090a15;
+            --card-bg: rgba(20, 24, 48, 0.65);
+            --card-border: rgba(212, 175, 55, 0.25);
+            --card-border-hover: rgba(243, 208, 110, 0.8);
+            --gold-primary: #f3d06e;
+            --gold-soft: #d4af37;
+            --purple-glow: rgba(138, 43, 226, 0.25);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 20% 15%, rgba(40, 25, 75, 0.8) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(15, 35, 70, 0.8) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, #05060c 0%, #090a15 100%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: 'Noto Serif TC', serif;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 微妙星光背景 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 800 800'%3E%3Cg fill='%23ffffff' fill-opacity='0.15'%3E%3Ccircle cx='100' cy='100' r='1'/%3E%3Ccircle cx='300' cy='200' r='1.5'/%3E%3Ccircle cx='600' cy='150' r='1'/%3E%3Ccircle cx='700' cy='400' r='2'/%3E%3Ccircle cx='200' cy='600' r='1.2'/%3E%3Ccircle cx='500' cy='700' r='1'/%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 頁眉區域 */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 1rem 0;
+        }
+
+        .subtitle-en {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.35em;
+            color: var(--gold-soft);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 20%, var(--gold-primary) 70%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 30px rgba(243, 208, 110, 0.2);
+        }
+
+        .header-desc {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 720px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* 卡片網格 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.8rem;
+            backdrop-filter: blur(12px);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: var(--card-border-hover);
+            box-shadow: 0 12px 40px rgba(138, 43, 226, 0.25), 0 0 20px rgba(243, 208, 110, 0.15);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold-primary);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            font-family: 'Cinzel', serif;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.65rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: 'Noto Serif TC', serif;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37 0%, #a67c1e 100%);
+            color: #090a15;
+            border: none;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #f3d06e 0%, #c49a2c 100%);
+            box-shadow: 0 6px 16px rgba(243, 208, 110, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--gold-soft);
+            color: var(--gold-primary);
+        }
+
+        /* 內嵌工具展示區 */
+        .viewer-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            margin-top: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .viewer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .viewer-title {
+            font-size: 1.2rem;
+            color: var(--gold-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: 750px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #000;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .iframe-container {
+                height: 550px;
+            }
+            .card-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="subtitle-en">Vedic Sidereal Astrology Portal</div>
+        <h1>印度占星 · 27宿與九曜恆星制工具中心</h1>
+        <p class="header-desc">
+            整合大運推算、擇時卜卦、108足對照與九曜星區對應。選擇下方工具進行直接瀏覽或獨立開啟。
+        </p>
+    </header>
+
+    <div class="grid">
+        <!-- 工具 1 -->
+        <div class="card">
+            <div>
+                <div class="card-header">
+                    <span class="badge">Gemini Engine</span>
+                </div>
+                <h2 class="card-title">27宿大運與擇時卜卦系統指南</h2>
+                <p class="card-desc">包含 Vimshottari Dasha 大運推算、擇時（Muhurta）與 Prashna 卜卦理論與對照手冊。</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-primary" onclick="loadTool('Indian_Astrology_Guide.html', '27宿大運與擇時卜卦系統指南')">👁️ 嵌入預覽</button>
+                <a class="btn btn-secondary" href="Indian_Astrology_Guide.html" target="_blank">↗ 新分頁</a>
+            </div>
+        </div>
+
+        <!-- 工具 2 -->
+        <div class="card">
+            <div>
+                <div class="card-header">
+                    <span class="badge">Gemini Engine</span>
+                </div>
+                <h2 class="card-title">27宿恆星制占星九曜108足對照輪盤</h2>
+                <p class="card-desc">視覺化 27 宿與 108 納分足（Pada）劃分，並對應九曜星主週期之精準對照輪盤。</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-primary" onclick="loadTool('27_108.html', '27宿恆星制占星九曜108足對照輪盤')">👁️ 嵌入預覽</button>
+                <a class="btn btn-secondary" href="27_108.html" target="_blank">↗ 新分頁</a>
+            </div>
+        </div>
+
+        <!-- 工具 3 -->
+        <div class="card">
+            <div>
+                <div class="card-header">
+                    <span class="badge">Fable Engine</span>
+                </div>
+                <h2 class="card-title">恆星制印度占星 · 二十七宿圓形圖表</h2>
+                <p class="card-desc">動態與圖形化的二十七宿（Nakshatra）黃道 360 度圓形星圖佈局展示。</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-primary" onclick="loadTool('nakshatra.html', '恆星制印度占星 · 二十七宿圓形圖表')">👁️ 嵌入預覽</button>
+                <a class="btn btn-secondary" href="nakshatra.html" target="_blank">↗ 新分頁</a>
+            </div>
+        </div>
+
+        <!-- 工具 4 -->
+        <div class="card">
+            <div>
+                <div class="card-header">
+                    <span class="badge">Claude Engine</span>
+                </div>
+                <h2 class="card-title">恆星制占星．27宿九曜對應輪</h2>
+                <p class="card-desc">互動式輪盤，快速檢索二十七宿屬性、曜主、四大元素與星區特質。</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-primary" onclick="loadTool('27宿九曜對應輪-v2.html', '恆星制占星．27宿九曜對應輪')">👁️ 嵌入預覽</button>
+                <a class="btn btn-secondary" href="27宿九曜對應輪-v2.html" target="_blank">↗ 新分頁</a>
+            </div>
+        </div>
+
+        <!-- 工具 5 -->
+        <div class="card">
+            <div>
+                <div class="card-header">
+                    <span class="badge">GPT Engine</span>
+                </div>
+                <h2 class="card-title">27宿・九曜恆星制占星圓形查閱表</h2>
+                <p class="card-desc">快速查詢各星宿對應度數範圍、九曜主管星體與吉凶屬性之查閱矩陣。</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-primary" onclick="loadTool('27宿_九曜_恆星制占星圓形查閱表.html', '27宿・九曜恆星制占星圓形查閱表')">👁️ 嵌入預覽</button>
+                <a class="btn btn-secondary" href="27宿_九曜_恆星制占星圓形查閱表.html" target="_blank">↗ 新分頁</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 即時預覽工作區 -->
+    <div class="viewer-section" id="viewer">
+        <div class="viewer-header">
+            <div class="viewer-title">
+                <span>✦ 當前預覽：</span>
+                <span id="current-tool-name" style="color: #fff;">27宿大運與擇時卜卦系統指南</span>
+            </div>
+            <a id="external-link" href="Indian_Astrology_Guide.html" target="_blank" class="btn btn-secondary" style="font-size:0.8rem; padding: 0.4rem 0.8rem;">
+                全螢幕獨立開啟 ↗
+            </a>
+        </div>
+        <div class="iframe-container">
+            <iframe id="tool-frame" src="Indian_Astrology_Guide.html" title="Astrology Tool Viewer"></iframe>
+        </div>
+    </div>
+
+    <footer>
+        <p>27 Nakshatras & Navagraha Sidereal Astrology Portal &copy; 2026</p>
+    </footer>
+</div>
+
+<script>
+    function loadTool(url, name) {
+        const frame = document.getElementById('tool-frame');
+        const titleText = document.getElementById('current-tool-name');
+        const extLink = document.getElementById('external-link');
+        
+        frame.src = url;
+        titleText.textContent = name;
+        extLink.href = url;
+        
+        // 平滑滾動至預覽區
+        document.getElementById('viewer').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
