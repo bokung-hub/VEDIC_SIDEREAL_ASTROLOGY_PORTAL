@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>27宿恆星制占星｜九曜108足限度主與擇時卜卦系統</title>
+<style>
+  :root {
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --bg-input: #0b1120;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --accent-gold: #f59e0b;
+    --accent-blue: #38bdf8;
+    --accent-green: #10b981;
+    --accent-red: #ef4444;
+    --accent-purple: #a855f7;
+    --border-color: #334155;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    line-height: 1.6;
+    padding: 20px;
+  }
+
+  .container { max-width: 1180px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+  header h1 { color: var(--accent-gold); font-size: 1.8rem; margin-bottom: 8px; }
+  header p { color: var(--text-muted); font-size: 0.95rem; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    background: var(--bg-card);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: bold;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { color: var(--text-main); border-color: var(--accent-gold); }
+  .tab-btn.active {
+    background: var(--accent-gold);
+    color: #000;
+    border-color: var(--accent-gold);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Cards & Grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    color: var(--accent-blue);
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+  }
+  .card h3 { color: var(--accent-gold); font-size: 1.05rem; margin: 14px 0 8px; }
+
+  /* Form Elements */
+  .form-group { margin-bottom: 15px; }
+  label { display: block; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 6px; }
+  input[type="number"], input[type="text"], select {
+    width: 100%;
+    padding: 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+  }
+  .deg-inputs { display: flex; gap: 10px; }
+  .deg-inputs > div { flex: 1; }
+
+  button.primary-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+    color: #000;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  button.primary-btn:hover { opacity: 0.9; }
+
+  /* Result Display */
+  .result-box {
+    background: var(--bg-input);
+    border-left: 4px solid var(--accent-gold);
+    padding: 16px;
+    border-radius: 6px;
+    margin-top: 15px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-right: 4px;
+    white-space: nowrap;
+  }
+  .badge-good { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
+  .badge-bad { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+  .badge-neutral { background: rgba(245, 158, 11, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+  .badge-special { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.88rem; }
+  th, td {
+    border: 1px solid var(--border-color);
+    padding: 9px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: #0b1120; color: var(--accent-gold); white-space: nowrap; }
+  tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+  tr:hover { background: rgba(56, 189, 248, 0.06); }
+
+  .score-display {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    background: #0b1120;
+  }
+  .formula-box {
+    background: #0b1120;
+    padding: 12px;
+    border-radius: 6px;
+    font-family: monospace;
+    color: var(--accent-blue);
+    margin: 10px 0;
+    overflow-x: auto;
+  }
+
+  /* Filter Bar for 108 Pada Directory */
+  .filter-bar {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 15px;
+    background: #0b1120;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+  }
+  @media (max-width: 768px) { .filter-bar { grid-template-columns: 1fr; } }
+
+  .section-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    margin: 35px 0 25px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>27宿恆星制占星｜九曜108足限度主與擇時卜卦系統</h1>
+    <p>整合「等分27宿（13°20'）」、「108足微觀刻度（3°20'）」、「九曜限度主循環」與「三九秘法」的演算工具與完整指南</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('calculator', this)">🔮 1. 108足擇時與卜卦計算器</button>
+    <button class="tab-btn" onclick="switchTab('scanner', this)">⏱️ 2. 黃金吉足自動篩選器</button>
+    <button class="tab-btn" onclick="switchTab('theory-lord', this)">📜 3. 九曜限度主與推進法</button>
+    <button class="tab-btn" onclick="switchTab('theory-pada', this)">🧭 4. 三九秘法與108足規則</button>
+  </div>
+
+  <!-- TAB 1: 互動計算器 -->
+  <div id="calculator" class="tab-content active">
+    <div class="grid-2">
+      <div class="card">
+        <h2>輸入星盤與起卦參數（恆星制 Sidereal）</h2>
+        
+        <div class="form-group">
+          <label>1. 本命月亮（或命度）恆星制經度（0° ~ 360°）</label>
+          <div class="deg-inputs">
+            <div>
+              <select id="natal-sign">
+                <option value="0">白羊座 (0°~30°)</option>
+                <option value="30">金牛座 (30°~60°)</option>
+                <option value="60">雙子座 (60°~90°)</option>
+                <option value="90">巨蟹座 (90°~120°)</option>
+                <option value="120">獅子座 (120°~150°)</option>
+                <option value="150">處女座 (150°~180°)</option>
+                <option value="180">天秤座 (180°~210°)</option>
+                <option value="210">天蠍座 (210°~240°)</option>
+                <option value="240">射手座 (240°~270°)</option>
+                <option value="270">摩羯座 (270°~300°)</option>
+                <option value="300">水瓶座 (300°~330°)</option>
+                <option value="330">雙魚座 (330°~360°)</option>
+              </select>
+            </div>
+            <div><input type="number" id="natal-deg" min="0" max="29" value="15" placeholder="度 (0-29)"></div>
+            <div><input type="number" id="natal-min" min="0" max="59" value="0" placeholder="分 (0-59)"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>2. 流年 / 起卦 / 擇時當下月亮恆星制經度</label>
+          <div class="deg-inputs">
+            <div>
+              <select id="transit-sign">
+                <option value="0">白羊座 (0°~30°)</option>
+                <option value="30" selected>金牛座 (30°~60°)</option>
+                <option value="60">雙子座 (60°~90°)</option>
+                <option value="90">巨蟹座 (90°~120°)</option>
+                <option value="120">獅子座 (120°~150°)</option>
+                <option value="150">處女座 (150°~180°)</option>
+                <option value="180">天秤座 (180°~210°)</option>
+                <option value="210">天蠍座 (210°~240°)</option>
+                <option value="240">射手座 (240°~270°)</option>
+                <option value="270">摩羯座 (270°~300°)</option>
+                <option value="300">水瓶座 (300°~330°)</option>
+                <option value="330">雙魚座 (330°~360°)</option>
+              </select>
+            </div>
+            <div><input type="number" id="transit-deg" min="0" max="29" value="14" placeholder="度 (0-29)"></div>
+            <div><input type="number" id="transit-min" min="0" max="59" value="20" placeholder="分 (0-59)"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>3. 問事 / 擇時行動目的（匹配108足四象屬性）</label>
+          <select id="goal-type">
+            <option value="1">第1足【法 Dharma】：開業、就職、發表、求名、拜見貴人</option>
+            <option value="2" selected>第2足【財 Artha】：簽約、投資、買房、薪資談判、啟動專案</option>
+            <option value="3">第3足【欲 Kama】：婚戀、社交、行銷推廣、談判協商、合夥</option>
+            <option value="4">第4足【解脫 Moksha】：手術治療、離職結案、還債、遠行、靈修占卜</option>
+          </select>
+        </div>
+
+        <button class="primary-btn" onclick="calculateAstrology()">執行 108足限度主與吉凶演算</button>
+      </div>
+
+      <div class="card">
+        <h2>綜合斷事與吉凶評分報告</h2>
+        <div id="calc-result">
+          <p style="color: var(--text-muted);">請輸入左側度數並點擊計算按鈕，系統將自動執行三九秘法、九曜生剋與108足微觀濾網演算。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: 黃金吉足自動篩選器 -->
+  <div id="scanner" class="tab-content">
+    <div class="card">
+      <h2>全黃道 108 足專屬吉時掃描器</h2>
+      <p style="color: var(--text-muted); margin-bottom: 15px;">根據您在「分頁 1」設定的<strong>本命月宿</strong>與<strong>行動目的</strong>，自動掃描全黃道 108 個刻度（每足 3°20'），列出最推薦的黃金吉足窗口：</p>
+      <button class="primary-btn" style="max-width: 300px; margin-bottom: 15px;" onclick="scanBestPadas()">掃描最佳擇時足數清單</button>
+      <div id="scanner-result"></div>
+    </div>
+  </div>
+
+  <!-- TAB 3: 九曜限度主與推進法 -->
+  <div id="theory-lord" class="tab-content">
+    <div class="card">
+      <h2>一、27宿「九曜限度主」循環基底（取代28宿七政屬性）</h2>
+      <p>印度27宿等分制（每宿 13°20'）無法被 7 整除，因此改由<strong>九曜（計都、金、日、月、火、羅睺、木、土、水）</strong>循環 3 輪（9 × 3 = 27）作為每一宿的「限度主」：</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>循環序</th>
+              <th>限度主（九曜）</th>
+              <th>對應27星宿（恆星制白羊 0° 起算）</th>
+              <th>主宰能量特質</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td><strong>計都 (Ketu)</strong></td><td>1. 婁宿、10. 星宿、19. 尾宿</td><td>轉折、靈感、斷捨離、內在覺醒</td></tr>
+            <tr><td>2</td><td><strong>金星 (Venus)</strong></td><td>2. 胃宿、11. 張宿、20. 箕宿</td><td>財祿、享受、人緣、藝術與合作</td></tr>
+            <tr><td>3</td><td><strong>太陽 (Sun)</strong></td><td>3. 昴宿、12. 翼宿、21. 斗宿</td><td>權威、名聲、父兄、官方與主導權</td></tr>
+            <tr><td>4</td><td><strong>月亮 (Moon)</strong></td><td>4. 畢宿、13. 軫宿、22. 女宿</td><td>情緒、母妻、滋養、變動與大眾緣</td></tr>
+            <tr><td>5</td><td><strong>火星 (Mars)</strong></td><td>5. 觜宿、14. 角宿、23. 虛宿</td><td>行動、開創、競爭、血光與衝動</td></tr>
+            <tr><td>6</td><td><strong>羅睺 (Rahu)</strong></td><td>6. 參宿、15. 亢宿、24. 危宿</td><td>野心、跨界、突破框架、世俗慾望</td></tr>
+            <tr><td>7</td><td><strong>木星 (Jupiter)</strong></td><td>7. 井宿、16. 氐宿、25. 室宿</td><td>智慧、貴人、擴張、功名與福德</td></tr>
+            <tr><td>8</td><td><strong>土星 (Saturn)</strong></td><td>8. 鬼宿、17. 房宿、26. 壁宿</td><td>穩固、壓力、延遲、長遠架構與考驗</td></tr>
+            <tr><td>9</td><td><strong>水星 (Mercury)</strong></td><td>9. 柳宿、18. 心宿、27. 奎宿</td><td>商業、文書、契約、溝通與邏輯</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>二、讓限度主「跑循環」的三種推進算法</h3>
+      <ul style="padding-left: 20px;">
+        <li><strong>算法 1（1足1年等速推進法）</strong>：以本命月亮所在足數為起點（1歲），每過 1 年往前跳 1 足（3°20'），108 年剛好走完黃道一圈。每 4 年換一顆「九曜大限度主」，每年換一顆「九分盤七政細限主」。</li>
+        <li><strong>算法 2（流年/流日月宿動態差值法）</strong>：計算當下天象月亮與本命月亮的相對距離，透過三九秘法與九曜生剋判定短期流年與卜卦吉凶。</li>
+        <li><strong>算法 3（Vimshottari 120年加權大限法）</strong>：依九曜先天年數分配（計7、金20、日6、月10、火7、羅18、木16、土19、水17，共120年）依序輪值。</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TAB 4: 三九秘法與108足規則 -->
+  <div id="theory-pada" class="tab-content">
+    <div class="card">
+      <h2>一、三九秘法（Navatara）與九曜同構對照表</h2>
+      <div class="formula-box">相對宿數差 ΔN = (流年/起卦月宿編號 - 本命月宿編號 + 27) mod 27 ｜ 宮位餘數 R = ΔN mod 9</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>餘數 R</th><th>三九宮位</th><th>對應九曜氣場</th><th>吉凶</th><th>核心斷事象意</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>0</td><td><strong>命（胎/業）</strong></td><td>計都氣場</td><td>中平</td><td>自我覺醒、宿命轉折、舊事重提，宜內修不宜盲動。</td></tr>
+            <tr><td>1</td><td><strong>榮 (Sampat)</strong></td><td>金星氣場</td><td><span class="badge badge-good">大吉</span></td><td>財祿豐盈、資源匯聚、貴人賞識，利求財與擴張。</td></tr>
+            <tr><td>2</td><td><strong>衰 (Vipat)</strong></td><td>太陽氣場</td><td><span class="badge badge-bad">大凶</span></td><td>耗損阻礙、權威衝突、計畫受挫，防破財或意外。</td></tr>
+            <tr><td>3</td><td><strong>安 (Kshema)</strong></td><td>月亮氣場</td><td><span class="badge badge-good">吉</span></td><td>身心安泰、家庭和睦、環境穩定，利穩健推進。</td></tr>
+            <tr><td>4</td><td><strong>危 (Pratyak)</strong></td><td>火星氣場</td><td><span class="badge badge-bad">凶</span></td><td>突發危機、口舌爭執、內部反叛或激烈競爭。</td></tr>
+            <tr><td>5</td><td><strong>成 (Sadhana)</strong></td><td>羅睺氣場</td><td><span class="badge badge-good">大吉</span></td><td>目標達成、突破框架、借力使力，利開創與跨界。</td></tr>
+            <tr><td>6</td><td><strong>壞 (Naidhana)</strong></td><td>木星氣場</td><td><span class="badge badge-bad">極凶</span></td><td>終結瓦解、健康紅燈、重大損失（過度膨脹後崩壞）。</td></tr>
+            <tr><td>7</td><td><strong>友 (Mitra)</strong></td><td>土星氣場</td><td><span class="badge badge-good">吉</span></td><td>長遠盟友、架構穩固，利簽約結盟與長期投資。</td></tr>
+            <tr><td>8</td><td><strong>親 (Parama Mitra)</strong></td><td>水星氣場</td><td><span class="badge badge-good">大吉</span></td><td>溝通順暢、文書契約大吉、人脈變現、心想事成。</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>二、108足（Pada）微觀擇時三大濾網</h3>
+      <ul style="padding-left: 20px;">
+        <li><strong>絕對凶足（一票否決）</strong>：避開<strong>甘達塔水火交界足（Index 35, 36, 71, 72, 107, 0）</strong>，此處為水象星座末度交接火象星座初度，能量極度動盪，忌重大決策與手術。</li>
+        <li><strong>四象目的匹配</strong>：第1足（火/法：開業求名）、第2足（土/財：簽約投資）、第3足（風/欲：婚戀社交）、第4足（水/解脫：醫療結案遠行，大忌開業求財）。</li>
+        <li><strong>普什卡拉黃金吉足（Pushkara Navamsa）</strong>：全黃道共有 24 個滋養吉足（火象星座第7、9足；土象第3、5足；風象第6、8足；水象第1、3足），落入此足可大幅化煞轉吉。</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="section-divider">
+
+  <!-- ==================== 頁面最下方：27宿108足逐足占卜含義與吉凶總表 ==================== -->
+  <div class="card" id="full-108-directory">
+    <h2>📖 27宿 108足（Index 0 ～ 107）逐足占卜含義與吉凶定義總表</h2>
+    <p style="color: var(--text-muted); margin-bottom: 14px;">
+      以下完整條列黃道 360° 均分 108 足（每足 3°20'）的靜態占卜屬性、九曜限度主、九分盤七政細限主、神煞吉凶標記及具體斷事宜忌。在實際論斷時，請將此處的<strong>「單足先天吉凶」</strong>與上方計算器得出的<strong>「三九秘法（與本命月宿相對位置）」</strong>交叉參看：
+    </p>
+
+    <div class="filter-bar">
+      <div>
+        <label>關鍵字搜尋（輸入星宿名、星座、斷語如「簽約」「手術」「財」）</label>
+        <input type="text" id="dir-search" placeholder="例如：畢宿、金牛、投資、吉足..." oninput="render108Table()">
+      </div>
+      <div>
+        <label>依九曜限度主篩選</label>
+        <select id="dir-lord-filter" onchange="render108Table()">
+          <option value="ALL">全部九曜限度主</option>
+          <option value="計都">計都 (Ketu)</option>
+          <option value="金星">金星 (Venus)</option>
+          <option value="太陽">太陽 (Sun)</option>
+          <option value="月亮">月亮 (Moon)</option>
+          <option value="火星">火星 (Mars)</option>
+          <option value="羅睺">羅睺 (Rahu)</option>
+          <option value="木星">木星 (Jupiter)</option>
+          <option value="土星">土星 (Saturn)</option>
+          <option value="水星">水星 (Mercury)</option>
+        </select>
+      </div>
+      <div>
+        <label>依先天吉凶／特殊神煞篩選</label>
+        <select id="dir-type-filter" onchange="render108Table()">
+          <option value="ALL">顯示全部 108 足</option>
+          <option value="PUSHKARA">✨ 僅看普什卡拉黃金吉足 (24足)</option>
+          <option value="GANDANTA">⚠️ 僅看甘達塔水火交界凶足 (6足)</option>
+          <option value="GOOD">🟢 先天吉象足數</option>
+          <option value="BAD">🔴 先天凶象／高風險足數</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="dir-count" style="color: var(--accent-gold); font-size: 0.9rem; margin-bottom: 8px;"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>足號</th>
+            <th>恆星制黃道區間</th>
+            <th>所屬星宿與足數</th>
+            <th>九曜限度主 / D9細主</th>
+            <th>先天吉凶定性</th>
+            <th>占卜核心含義與擇時斷事宜忌</th>
+          </tr>
+        </thead>
+        <tbody id="dir-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================= 27宿與108足核心資料庫 =================
+const NAKSHATRAS = [
+  "1. 婁宿 (Ashwini)", "2. 胃宿 (Bharani)", "3. 昴宿 (Krittika)",
+  "4. 畢宿 (Rohini)", "5. 觜宿 (Mrigashira)", "6. 參宿 (Ardra)",
+  "7. 井宿 (Punarvasu)", "8. 鬼宿 (Pushya)", "9. 柳宿 (Ashlesha)",
+  "10. 星宿 (Magha)", "11. 張宿 (Purva Phalguni)", "12. 翼宿 (Uttara Phalguni)",
+  "13. 軫宿 (Hasta)", "14. 角宿 (Chitra)", "15. 亢宿 (Swati)",
+  "16. 氐宿 (Vishakha)", "17. 房宿 (Anuradha)", "18. 心宿 (Jyeshtha)",
+  "19. 尾宿 (Mula)", "20. 箕宿 (Purva Ashadha)", "21. 斗宿 (Uttara Ashadha)",
+  "22. 女宿 (Shravana)", "23. 虛宿 (Dhanishta)", "24. 危宿 (Shatabhisha)",
+  "25. 室宿 (Purva Bhadrapada)", "26. 壁宿 (Uttara Bhadrapada)", "27. 奎宿 (Revati)"
+];
+
+// 27宿各自的核心占卜特質（用於組合108足逐足斷語）
+const NAK_CORE_MEANINGS = [
+  { nature: "吉（迅捷）", theme: "快速啟動、醫療治癒、交通遠行、開創新局，忌拖延猶豫。" }, // 1 婁
+  { nature: "凶（嚴厲）", theme: "激烈競爭、生死轉折、債務清理、執法懲戒，忌婚嫁開業。" }, // 2 胃
+  { nature: "中平（剛烈）", theme: "切割決斷、烹飪冶煉、權威整頓、除舊佈新，防口舌火厄。" }, // 3 昴
+  { nature: "大吉（穩固）", theme: "財富滋養、房產置業、婚戀喜慶、事業紮根，萬事皆宜。" }, // 4 畢
+  { nature: "吉（溫和）", theme: "探索尋覓、藝術創作、感情交流、商業考察，利溫和推進。" }, // 5 觜
+  { nature: "凶（暴烈）", theme: "風暴突變、情緒淚水、破局重整、科研攻堅，忌求安穩。" }, // 6 參
+  { nature: "大吉（更生）", theme: "失而復得、貴人提攜、搬遷旅遊、修復關係，利重新出發。" }, // 7 井
+  { nature: "大吉（滋養）", theme: "福德最勝、投資理財、拜師學藝、行政就職（唯大忌結婚）。" }, // 8 鬼
+  { nature: "凶（糾纏）", theme: "暗中謀劃、心理博弈、毒物醫藥、防小人算計與合約陷阱。" }, // 9 柳
+  { nature: "中平（尊貴）", theme: "祖蔭權威、典禮儀式、晉升求名、家族事務，忌卑微妥協。" }, // 10 星
+  { nature: "吉（享樂）", theme: "愛情桃花、娛樂宴會、藝術表演、休息放鬆，忌嚴肅訴訟。" }, // 11 張
+  { nature: "大吉（契約）", theme: "正式締約、婚嫁結盟、長期合作、公務升遷，主信守承諾。" }, // 12 翼
+  { nature: "大吉（巧藝）", theme: "手藝技術、商業買賣、快速成交、醫療護理，利務實操作。" }, // 13 軫
+  { nature: "吉（華麗）", theme: "設計裝修、品牌包裝、珠寶服飾、展現才華，防表面浮華。" }, // 14 角
+  { nature: "吉（靈動）", theme: "獨立自主、貿易流通、外交談判、順勢而為，忌死守成規。" }, // 15 亢
+  { nature: "中平（執著）", theme: "目標專注、競爭奪標、跨界合作，防過度貪婪與嫉妒爭端。" }, // 16 氐
+  { nature: "大吉（和合）", theme: "團隊協作、異地發展、組織管理、人脈結盟，利跨國事務。" }, // 17 房
+  { nature: "凶（孤高）", theme: "權力鬥爭、危機處理、秘密行動、軍警維安，防樹敵孤立。" }, // 18 心
+  { nature: "凶（根除）", theme: "連根拔起、破舊立新、哲學玄學、中草藥療癒，忌守成求穩。" }, // 19 尾
+  { nature: "吉（勝券）", theme: "辯論說服、水中事務、藝文推廣、蓄勢待發，利爭取勝算。" }, // 20 箕
+  { nature: "大吉（永恆）", theme: "不可動搖之勝利、奠基開業、官方授權、長遠規劃大吉。" }, // 21 斗
+  { nature: "大吉（傾聽）", theme: "學習傳承、口碑傳播、資訊收集、人際和解，利教學顧問。" }, // 22 女
+  { nature: "吉（富足）", theme: "名利雙收、音樂韻律、團隊領導、資產增值，防婚姻冷戰。" }, // 23 虛
+  { nature: "中平（隱秘）", theme: "疑難雜症治療、科技研發、秘密調查、戒除惡習，忌公開張揚。" }, // 24 危
+  { nature: "凶（激烈）", theme: "靈性覺醒、苦行轉化、外科手術、徹底改革，防突發災禍。" }, // 25 室
+  { nature: "大吉（深沉）", theme: "基業長青、慈善公益、不動產積累、潛心研究，主厚積薄發。" }, // 26 壁
+  { nature: "大吉（圓滿）", theme: "功德圓滿、財富豐收、遠行歸來、婚嫁啟程，萬事順遂。" }  // 27 奎
+];
+
+const NINE_LORDS = ["計都", "金星", "太陽", "月亮", "火星", "羅睺", "木星", "土星", "水星"];
+
+const NAVATARA = [
+  { name: "命（胎/業）", type: "neutral", score: 0, desc: "自我覺醒與轉折，宜內修評估，不宜盲目躁進。" },
+  { name: "榮 (Sampat)", type: "good", score: 35, desc: "大吉！財祿豐盈、資源匯聚，極利求財與合作。" },
+  { name: "衰 (Vipat)", type: "bad", score: -40, desc: "大凶！易遇阻礙耗損與權威衝突，防破財或受挫。" },
+  { name: "安 (Kshema)", type: "good", score: 25, desc: "吉！身心安泰、環境穩定，利穩健推進與休養。" },
+  { name: "危 (Pratyak)", type: "bad", score: -35, desc: "凶！突發危機、口舌爭執或競爭壓力大。" },
+  { name: "成 (Sadhana)", type: "good", score: 40, desc: "大吉！目標達成、突破框架，利開創與跨界成功。" },
+  { name: "壞 (Naidhana)", type: "bad", score: -50, desc: "極凶！主終結瓦解與重大損失，重大決策務必避開。" },
+  { name: "友 (Mitra)", type: "good", score: 25, desc: "吉！長遠盟友與貴人扶持，利簽約結盟。" },
+  { name: "親 (Parama Mitra)", type: "good", score: 35, desc: "大吉！文書溝通順暢、人脈變現，心想事成。" }
+];
+
+const D9_SIGNS = [
+  { name: "白羊", lord: "火星" }, { name: "金牛", lord: "金星" }, { name: "雙子", lord: "水星" },
+  { name: "巨蟹", lord: "月亮" }, { name: "獅子", lord: "太陽" }, { name: "處女", lord: "水星" },
+  { name: "天秤", lord: "金星" }, { name: "天蠍", lord: "火星" }, { name: "射手", lord: "木星" },
+  { name: "摩羯", lord: "土星" }, { name: "水瓶", lord: "土星" }, { name: "雙魚", lord: "木星" }
+];
+
+const SIGN_NAMES = ["白羊座", "金牛座", "雙子座", "巨蟹座", "獅子座", "處女座", "天秤座", "天蠍座", "射手座", "摩羯座", "水瓶座", "雙魚座"];
+
+const PADA_PURPOSES = {
+  1: { name: "第1足【法 Dharma・火象】", short: "法足（開業/求名/啟動）", good: "開業、就職、發表、求名、拜見長官", bad: "隱密交易、妥協退讓" },
+  2: { name: "第2足【財 Artha・土象】", short: "財足（簽約/投資/置產）", good: "簽約、投資、買房、薪資談判、長期專案", bad: "投機賭博、感情糾紛" },
+  3: { name: "第3足【欲 Kama・風象】", short: "欲足（婚戀/社交/合夥）", good: "婚戀、社交宴會、行銷推廣、談判合夥", bad: "獨立閉關、法律訴訟" },
+  4: { name: "第4足【解脫 Moksha・水象】", short: "解脫足（醫療/結案/遠行）", good: "手術治療、離職結案、還債、遠行、靈修占卜", bad: "大忌開業、求財、結婚（易無疾而終）" }
+};
+
+const PLANET_RELATIONS = {
+  "計都": { friends: ["火星", "金星", "土星", "水星"], enemies: ["太陽", "月亮"] },
+  "金星": { friends: ["水星", "土星", "羅睺", "計都"], enemies: ["太陽", "月亮"] },
+  "太陽": { friends: ["月亮", "火星", "木星"], enemies: ["金星", "土星", "羅睺", "計都"] },
+  "月亮": { friends: ["太陽", "水星"], enemies: ["羅睺", "計都"] },
+  "火星": { friends: ["太陽", "月亮", "木星", "計都"], enemies: ["水星", "羅睺"] },
+  "羅睺": { friends: ["金星", "土星", "水星"], enemies: ["太陽", "月亮", "火星"] },
+  "木星": { friends: ["太陽", "月亮", "火星"], enemies: ["金星", "水星"] },
+  "土星": { friends: ["金星", "水星", "羅睺", "計都"], enemies: ["太陽", "月亮", "火星"] },
+  "水星": { friends: ["太陽", "金星", "羅睺", "計都"], enemies: ["月亮"] }
+};
+
+const GANDANTA_INDICES = [35, 36, 71, 72, 107, 0];
+
+function isPushkaraPada(padaIndex) {
+  const signIdx = Math.floor(padaIndex / 9);
+  const padaInSign = (padaIndex % 9) + 1;
+  const element = signIdx % 4;
+  if (element === 0 && (padaInSign === 7 || padaInSign === 9)) return true;
+  if (element === 1 && (padaInSign === 3 || padaInSign === 5)) return true;
+  if (element === 2 && (padaInSign === 6 || padaInSign === 8)) return true;
+  if (element === 3 && (padaInSign === 1 || padaInSign === 3)) return true;
+  return false;
+}
+
+function formatDegMin(totalMinutes) {
+  const degInSign = Math.floor((totalMinutes % 1800) / 60);
+  const minInSign = totalMinutes % 60;
+  return `${degInSign}°${minInSign.toString().padStart(2, '0')}'`;
+}
+
+function parseLongitude(totalDeg) {
+  const normDeg = ((totalDeg % 360) + 360) % 360;
+  const totalMinutes = normDeg * 60;
+  const padaIndex = Math.floor(totalMinutes / 200);
+  const nakIndex = Math.floor(padaIndex / 4);
+  const padaNum = (padaIndex % 4) + 1;
+  const nakLord = NINE_LORDS[nakIndex % 9];
+  const d9 = D9_SIGNS[padaIndex % 12];
+  
+  return {
+    deg: normDeg,
+    padaIndex,
+    nakIndex,
+    nakName: NAKSHATRAS[nakIndex],
+    padaNum,
+    nakLord,
+    d9Sign: d9.name,
+    d9Lord: d9.lord,
+    isGandanta: GANDANTA_INDICES.includes(padaIndex),
+    isPushkara: isPushkaraPada(padaIndex)
+  };
+}
+
+function getRelation(bodyLord, transitLord) {
+  if (bodyLord === transitLord) return { status: "比和（同星氣場共振）", score: 15, badge: "badge-good" };
+  const rel = PLANET_RELATIONS[bodyLord];
+  if (rel.friends.includes(transitLord)) return { status: "相生/友善（得助順遂）", score: 15, badge: "badge-good" };
+  if (rel.enemies.includes(transitLord)) return { status: "相剋/敵對（內耗阻礙）", score: -15, badge: "badge-bad" };
+  return { status: "中性（平穩互動）", score: 5, badge: "badge-neutral" };
+}
+
+function calculateAstrology() {
+  const nDeg = parseFloat(document.getElementById("natal-sign").value) +
+               parseFloat(document.getElementById("natal-deg").value || 0) +
+               parseFloat(document.getElementById("natal-min").value || 0) / 60;
+
+  const tDeg = parseFloat(document.getElementById("transit-sign").value) +
+               parseFloat(document.getElementById("transit-deg").value || 0) +
+               parseFloat(document.getElementById("transit-min").value || 0) / 60;
+
+  const goalPada = parseInt(document.getElementById("goal-type").value);
+
+  const natal = parseLongitude(nDeg);
+  const transit = parseLongitude(tDeg);
+
+  const deltaN = (transit.nakIndex - natal.nakIndex + 27) % 27;
+  const taraIdx = deltaN % 9;
+  const tara = NAVATARA[taraIdx];
+  const groupNum = Math.floor(deltaN / 9) + 1;
+  const groupDesc = groupNum === 1 ? "第一組（近距離：直接影響自身與當下）" :
+                    groupNum === 2 ? "第二組（中距離「業」組：主事業與外部人際）" :
+                                     "第三組（遠距離「胎」組：主長遠規劃與潛在因果）";
+
+  const relation = getRelation(natal.nakLord, transit.nakLord);
+
+  let totalScore = 50 + tara.score + relation.score;
+  let notes = [];
+
+  if (transit.isGandanta) {
+    totalScore -= 50;
+    notes.push(`<span class="badge badge-bad">致命凶足警告</span> 落入<strong>甘達塔水火交界足（Index ${transit.padaIndex}）</strong>，能量極度動盪，重大決定一票否決！`);
+  }
+  if (transit.isPushkara) {
+    totalScore += 25;
+    notes.push(`<span class="badge badge-special">黃金吉足加成</span> 落入<strong>普什卡拉滋養足（Pushkara Navamsa）</strong>，具備化腐朽為神奇的強力吉兆！`);
+  }
+  if (transit.padaNum === goalPada) {
+    totalScore += 20;
+    notes.push(`<span class="badge badge-good">目的完美匹配</span> 當下月亮位於<strong>${PADA_PURPOSES[transit.padaNum].name}</strong>，完全契合您的行動目標。`);
+  } else {
+    totalScore -= 10;
+    notes.push(`<span class="badge badge-neutral">足數目的偏差</span> 當下為<strong>${PADA_PURPOSES[transit.padaNum].name}</strong>（宜：${PADA_PURPOSES[transit.padaNum].good}；忌：${PADA_PURPOSES[transit.padaNum].bad}）。`);
+  }
+
+  totalScore = Math.max(0, Math.min(100, totalScore));
+  const scoreColor = totalScore >= 70 ? "var(--accent-green)" : totalScore >= 45 ? "var(--accent-gold)" : "var(--accent-red)";
+  const verdict = totalScore >= 75 ? "大吉良辰・果斷行動" :
+                  totalScore >= 55 ? "中吉可用・穩健推進" :
+                  totalScore >= 40 ? "吉凶參半・謹慎評估" : "凶象顯著・建議避開";
+
+  const html = `
+    <div class="score-display" style="color: ${scoreColor};">
+      ${totalScore} 分 ｜ ${verdict}
+    </div>
+
+    <div class="result-box">
+      <h3>一、星宿與限度主座標</h3>
+      <p><strong>本命月宿（體）：</strong>${natal.nakName} 第 ${natal.padaNum} 足（Index ${natal.padaIndex}）｜九曜限度主：<span class="badge badge-neutral">${natal.nakLord}</span></p>
+      <p><strong>流年/起卦（用）：</strong>${transit.nakName} 第 ${transit.padaNum} 足（Index ${transit.padaIndex}）｜九曜限度主：<span class="badge badge-neutral">${transit.nakLord}</span>（九分盤細限主：${transit.d9Sign}${transit.d9Lord}）</p>
+    </div>
+
+    <div class="result-box">
+      <h3>二、三九秘法與九曜生剋判定</h3>
+      <p><strong>相對位置（象）：</strong>順數第 ${deltaN} 宿（${groupDesc}）</p>
+      <p><strong>三九宮位：</strong><span class="badge badge-${tara.type}">${tara.name}</span> — ${tara.desc}</p>
+      <p><strong>限度主生剋（理）：</strong>本命【${natal.nakLord}】 vs 流年【${transit.nakLord}】 → <span class="badge ${relation.badge}">${relation.status}</span></p>
+    </div>
+
+    <div class="result-box">
+      <h3>三、108足微觀濾網診斷</h3>
+      ${notes.map(n => `<p style="margin-bottom: 8px;">• ${n}</p>`).join("")}
+    </div>
+  `;
+
+  document.getElementById("calc-result").innerHTML = html;
+}
+
+function scanBestPadas() {
+  const nDeg = parseFloat(document.getElementById("natal-sign").value) +
+               parseFloat(document.getElementById("natal-deg").value || 0) +
+               parseFloat(document.getElementById("natal-min").value || 0) / 60;
+  const goalPada = parseInt(document.getElementById("goal-type").value);
+  const natal = parseLongitude(nDeg);
+
+  let results = [];
+
+  for (let idx = 0; idx < 108; idx++) {
+    if (GANDANTA_INDICES.includes(idx)) continue;
+
+    const startDeg = (idx * 200) / 60;
+    const endDeg = ((idx + 1) * 200) / 60;
+    const transit = parseLongitude(startDeg + 0.1);
+
+    const deltaN = (transit.nakIndex - natal.nakIndex + 27) % 27;
+    const tara = NAVATARA[deltaN % 9];
+    if (tara.type === "bad") continue;
+
+    const relation = getRelation(natal.nakLord, transit.nakLord);
+    let score = 50 + tara.score + relation.score;
+    if (transit.isPushkara) score += 25;
+    if (transit.padaNum === goalPada) score += 20;
+
+    if (score >= 85) {
+      const signName = SIGN_NAMES[Math.floor(startDeg / 30)];
+      const dInSign = (startDeg % 30).toFixed(1);
+      results.push({
+        idx,
+        range: `${signName} ${dInSign}° 起 (${startDeg.toFixed(1)}°~${endDeg.toFixed(1)}°)`,
+        nak: `${transit.nakName} 第${transit.padaNum}足`,
+        lord: transit.nakLord,
+        tara: tara.name,
+        pushkara: transit.isPushkara ? "✨ 普什卡拉吉足" : "-",
+        score
+      });
+    }
+  }
+
+  results.sort((a, b) => b.score - a.score);
+
+  let tableHtml = `
+    <p style="margin-bottom: 10px;">針對本命【${natal.nakName} / ${natal.nakLord}】與【${PADA_PURPOSES[goalPada].name}】，共篩選出 <strong>${results.length}</strong> 個頂級黃金擇時刻度（85分以上）：</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>108足編號</th>
+            <th>黃道恆星制位置</th>
+            <th>星宿與足數</th>
+            <th>限度主</th>
+            <th>三九宮位</th>
+            <th>特殊加成</th>
+            <th>綜合評分</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${results.map(r => `
+            <tr>
+              <td><strong>Index ${r.idx}</strong></td>
+              <td>${r.range}</td>
+              <td>${r.nak}</td>
+              <td>${r.lord}</td>
+              <td><span class="badge badge-good">${r.tara}</span></td>
+              <td>${r.pushkara}</td>
+              <td><strong style="color: var(--accent-green);">${r.score} 分</strong></td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  document.getElementById("scanner-result").innerHTML = tableHtml;
+}
+
+// ================= 生成完整 108 足逐足占卜總表 =================
+const ALL_108_PADAS = [];
+for (let idx = 0; idx < 108; idx++) {
+  const startMin = idx * 200;
+  const endMin = (idx + 1) * 200;
+  const signIdx = Math.floor(startMin / 1800);
+  const signName = SIGN_NAMES[signIdx];
+  const rangeStr = `${signName} ${formatDegMin(startMin)} ~ ${formatDegMin(endMin === 21600 ? 0 : endMin)} (${(startMin/60).toFixed(1)}°~${(endMin/60).toFixed(1)}°)`;
+
+  const nakIndex = Math.floor(idx / 4);
+  const padaNum = (idx % 4) + 1;
+  const nakName = NAKSHATRAS[nakIndex];
+  const nakCore = NAK_CORE_MEANINGS[nakIndex];
+  const nakLord = NINE_LORDS[nakIndex % 9];
+  const d9 = D9_SIGNS[idx % 12];
+  const purpose = PADA_PURPOSES[padaNum];
+
+  const isGandanta = GANDANTA_INDICES.includes(idx);
+  const isPushkara = isPushkaraPada(idx);
+
+  // 綜合先天吉凶定性
+  let natureBadge = "";
+  let natureCategory = "NEUTRAL";
+  if (isGandanta) {
+    natureBadge = `<span class="badge badge-bad">⚠️ 甘達塔交界凶足</span>`;
+    natureCategory = "BAD";
+  } else if (isPushkara) {
+    natureBadge = `<span class="badge badge-special">✨ 普什卡拉黃金吉足</span>`;
+    natureCategory = "GOOD";
+  } else if (padaNum === 4 && !nakCore.nature.includes("大吉")) {
+    natureBadge = `<span class="badge badge-neutral">💧 解脫足（忌開業求財）</span>`;
+    natureCategory = "BAD";
+  } else if (nakCore.nature.includes("吉")) {
+    natureBadge = `<span class="badge badge-good">${nakCore.nature}</span>`;
+    natureCategory = "GOOD";
+  } else if (nakCore.nature.includes("凶")) {
+    natureBadge = `<span class="badge badge-bad">${nakCore.nature}</span>`;
+    natureCategory = "BAD";
+  } else {
+    natureBadge = `<span class="badge badge-neutral">${nakCore.nature}</span>`;
+  }
+
+  // 組合占卜斷語
+  let specialNote = "";
+  if (isGandanta) {
+    specialNote = `<strong style="color:var(--accent-red);">【水火相激煞】</strong>處於星座交界斷裂帶，占卜主突發變故、合作破局或身心動盪，重大決定務必避開。`;
+  } else if (isPushkara) {
+    specialNote = `<strong style="color:var(--accent-purple);">【滋養黃金位】</strong>具備強大修復與繁榮能量，占卜遇之主逢凶化吉、貴人暗助，極利啟動重要事務。`;
+  }
+
+  const divinationText = `${specialNote} <strong>[${purpose.short}]</strong> 結合${nakName.split(" ")[1]}特質：${nakCore.theme} <strong>宜：</strong>${purpose.good}；<strong>忌：</strong>${purpose.bad}。`;
+
+  ALL_108_PADAS.push({
+    idx,
+    rangeStr,
+    nakName,
+    padaNum,
+    nakLord,
+    d9Info: `${d9.name}（${d9.lord}）`,
+    natureBadge,
+    natureCategory,
+    isGandanta,
+    isPushkara,
+    divinationText,
+    rawSearch: `${idx} ${rangeStr} ${nakName} 第${padaNum}足 ${nakLord} ${d9.name} ${d9.lord} ${divinationText}`
+  });
+}
+
+function render108Table() {
+  const keyword = document.getElementById("dir-search").value.trim().toLowerCase();
+  const lordFilter = document.getElementById("dir-lord-filter").value;
+  const typeFilter = document.getElementById("dir-type-filter").value;
+
+  const filtered = ALL_108_PADAS.filter(item => {
+    if (lordFilter !== "ALL" && item.nakLord !== lordFilter) return false;
+    if (typeFilter === "PUSHKARA" && !item.isPushkara) return false;
+    if (typeFilter === "GANDANTA" && !item.isGandanta) return false;
+    if (typeFilter === "GOOD" && item.natureCategory !== "GOOD") return false;
+    if (typeFilter === "BAD" && item.natureCategory !== "BAD") return false;
+    if (keyword && !item.rawSearch.toLowerCase().includes(keyword)) return false;
+    return true;
+  });
+
+  document.getElementById("dir-count").innerHTML = `目前顯示 <strong>${filtered.length}</strong> / 108 足資料`;
+
+  const tbody = document.getElementById("dir-table-body");
+  tbody.innerHTML = filtered.map(item => `
+    <tr>
+      <td><strong>Index ${item.idx}</strong></td>
+      <td style="white-space:nowrap;">${item.rangeStr}</td>
+      <td style="white-space:nowrap;"><strong>${item.nakName}</strong><br>第 ${item.padaNum} 足</td>
+      <td style="white-space:nowrap;">主：<span class="badge badge-neutral">${item.nakLord}</span><br>細：${item.d9Info}</td>
+      <td>${item.natureBadge}</td>
+      <td>${item.divinationText}</td>
+    </tr>
+  `).join("");
+}
+
+function switchTab(tabId, btnEl) {
+  document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+  document.getElementById(tabId).classList.add("active");
+  btnEl.classList.add("active");
+}
+
+window.onload = function() {
+  calculateAstrology();
+  render108Table();
+};
+</script>
+
+</body>
+</html>
