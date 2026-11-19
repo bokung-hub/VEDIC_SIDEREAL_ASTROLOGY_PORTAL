@@ -138,6 +138,50 @@
             </button>
           </div>
         </div>
+
+        <!-- 資料存檔與載入系統（LocalStorage + JSON 匯出/匯入） -->
+        <div class="pt-3 border-t border-slate-700/70 space-y-2.5">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+            <span class="text-xs font-bold text-goldLight flex items-center gap-1.5">
+              💾 盤面資料存檔庫與 JSON 檔案管理
+            </span>
+            <span id="storage-toast" class="text-xs text-emerald-400 font-medium opacity-0 transition-opacity duration-300"></span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-center">
+            <!-- 輸入標題並儲存 -->
+            <div class="lg:col-span-5 flex items-center gap-1.5">
+              <input type="text" id="record-title-input" placeholder="輸入案例名稱（如：2026事業簽約盤）" class="flex-1 bg-void border border-slate-600 rounded-lg px-3 py-1.5 text-xs text-slate-100 focus:border-gold focus:outline-none" />
+              <button onclick="saveChartToLocal()" class="px-3 py-1.5 rounded-lg bg-gold/25 hover:bg-gold/40 text-goldLight border border-gold/50 text-xs font-bold shrink-0 transition cursor-pointer">
+                儲存案例
+              </button>
+            </div>
+
+            <!-- 讀取/刪除已存案例 -->
+            <div class="lg:col-span-4 flex items-center gap-1.5">
+              <select id="saved-records-select" class="flex-1 bg-void border border-slate-600 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:border-cyan-400 focus:outline-none">
+                <option value="">-- 選擇已儲存案例 --</option>
+              </select>
+              <button onclick="loadChartFromLocal()" class="px-2.5 py-1.5 rounded-lg bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-500/40 text-xs font-medium shrink-0 transition cursor-pointer">
+                載入
+              </button>
+              <button onclick="deleteChartFromLocal()" class="px-2.5 py-1.5 rounded-lg bg-rose-950/80 hover:bg-rose-900 text-rose-300 border border-rose-500/40 text-xs font-medium shrink-0 transition cursor-pointer" title="刪除選取案例">
+                刪除
+              </button>
+            </div>
+
+            <!-- JSON 匯出與匯入 -->
+            <div class="lg:col-span-3 flex items-center justify-end gap-1.5">
+              <button onclick="exportChartJSON()" class="flex-1 lg:flex-none px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 text-xs font-medium transition cursor-pointer">
+                ⬇️ 匯出 JSON
+              </button>
+              <label class="flex-1 lg:flex-none px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 text-xs font-medium text-center transition cursor-pointer">
+                ⬆️ 匯入 JSON
+                <input type="file" id="json-file-input" accept=".json" onchange="importChartJSON(event)" class="hidden" />
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- 輸入控制面板 -->
@@ -346,65 +390,120 @@
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <!-- 本命行限 / 本命月宿足位 -->
+            <!-- 本命足位卡片 -->
             <div class="rounded-xl bg-void/85 border border-slate-700 p-3.5 space-y-2">
               <div class="flex items-center justify-between">
                 <span id="res-natal-pada-title" class="text-xs font-bold text-amber-300">本命限度足位</span>
-                <span id="res-natal-pada-num" class="font-mono text-xs px-2 py-0.5 rounded bg-slate-800 text-goldLight">第 -- 足</span>
+                <span id="res-natal-pada-num" class="font-mono text-xs text-slate-400">--</span>
               </div>
-              <div id="res-natal-purushartha" class="text-sm font-semibold text-white">--</div>
+              <div id="res-natal-purushartha" class="text-sm font-bold text-amber-300">--</div>
               <div id="res-natal-d9" class="text-xs text-slate-300">九分盤 D9：--</div>
               <div id="res-natal-pada-badges" class="flex flex-wrap gap-1.5 pt-1"></div>
+              <div id="res-natal-pada-desc" class="text-[11px] text-slate-400 leading-relaxed">--</div>
             </div>
 
-            <!-- 事件上升 / 事件月宿足位 -->
+            <!-- 事件足位卡片 -->
             <div class="rounded-xl bg-void/85 border border-slate-700 p-3.5 space-y-2">
               <div class="flex items-center justify-between">
                 <span id="res-event-pada-title" class="text-xs font-bold text-cyan-300">事件上升足位</span>
-                <span id="res-event-pada-num" class="font-mono text-xs px-2 py-0.5 rounded bg-slate-800 text-cyan-300">第 -- 足</span>
+                <span id="res-event-pada-num" class="font-mono text-xs text-slate-400">--</span>
               </div>
-              <div id="res-event-purushartha" class="text-sm font-semibold text-white">--</div>
+              <div id="res-event-purushartha" class="text-sm font-bold text-cyan-300">--</div>
               <div id="res-event-d9" class="text-xs text-slate-300">九分盤 D9：--</div>
               <div id="res-event-pada-badges" class="flex flex-wrap gap-1.5 pt-1"></div>
+              <div id="res-event-pada-desc" class="text-[11px] text-slate-400 leading-relaxed">--</div>
             </div>
           </div>
 
-          <!-- Star A & Star B 在事件盤中的 D9 廟旺落陷 -->
+          <!-- 雙主星在事件盤當下的 D9 實質強弱 -->
           <div id="res-lords-d9-status" class="rounded-xl bg-nebula/90 border border-slate-700/80 p-3 text-xs text-slate-300 space-y-1.5">
-            <!-- 動態填入 Star A / Star B 實質強弱 -->
+            --
           </div>
         </div>
       </div>
 
-      <!-- 步驟 3：九曜宿主定位鏈（27宿星鏈視覺化） -->
+      <!-- 步驟 3：九曜宿主定位鏈（27宿星鏈與後天十二宮雙軌並列視覺化） -->
       <div class="glass-card rounded-2xl p-5 space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-700/70 pb-3 gap-2">
-          <h3 class="text-base font-serif font-bold text-goldLight flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full bg-gold text-void text-xs font-sans font-bold flex items-center justify-center">3</span>
-            九曜宿主定位鏈（27宿因果星鏈推演）
-          </h3>
-          <div id="res-chain-convergence" class="text-xs font-medium px-3 py-1 rounded-full bg-slate-800 border border-slate-600 text-slate-300">
-            匯聚狀態分析中...
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between border-b border-slate-700/70 pb-3 gap-2.5">
+          <div>
+            <h3 class="text-base font-serif font-bold text-goldLight flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-gold text-void text-xs font-sans font-bold flex items-center justify-center">3</span>
+              九曜宿主定位鏈 × 後天十二宮（命宮～玄秘宮）雙軌鎖鏈
+            </h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">同步顯示九曜宿度傳遞路徑與整宮制後天十二宮之宮位流轉吉凶</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- 後天十二宮定宮基準切換 -->
+            <div class="flex items-center gap-1.5 bg-void/90 border border-slate-700 rounded-lg px-2.5 py-1">
+              <span class="text-[11px] text-slate-400">十二宮定宮基準：</span>
+              <select id="house-base-mode" onchange="runCalculation()" class="bg-transparent text-xs font-bold text-goldLight focus:outline-none cursor-pointer">
+                <option value="event" class="bg-void text-slate-100">以事件流年上升定宮</option>
+                <option value="natal" class="bg-void text-slate-100">以本命上升命宮定宮</option>
+              </select>
+            </div>
+
+            <div id="res-chain-convergence" class="text-xs font-medium px-3 py-1 rounded-full bg-slate-800 border border-slate-600 text-slate-300">
+              匯聚狀態分析中...
+            </div>
           </div>
         </div>
 
         <div class="space-y-4">
           <!-- Star A 鏈 -->
-          <div class="rounded-xl bg-void/85 border border-amber-500/25 p-4">
-            <div class="text-xs font-bold text-amber-400 mb-2.5 flex items-center justify-between">
-              <span>【體鏈】本命限度／大限主 (Star A) 氣數流向：</span>
+          <div class="rounded-xl bg-void/85 border border-amber-500/25 p-4 space-y-3">
+            <div class="text-xs font-bold text-amber-400 flex flex-wrap items-center justify-between gap-2">
+              <span>【體鏈】本命限度／大限主 (Star A) 九曜宿度流向：</span>
               <span id="chain-a-summary" class="font-normal text-slate-400"></span>
             </div>
             <div id="chain-a-nodes" class="flex flex-wrap items-center gap-2"></div>
+            <!-- 平行後天十二宮鎖鏈 A -->
+            <div class="pt-2.5 border-t border-slate-800/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-amber-950/15 rounded-lg px-3 py-2">
+              <div class="text-xs text-amber-200/90">
+                <span class="font-bold text-amber-400">🏛️ 體・後天十二宮鎖鏈：</span>
+                <span id="chain-a-houses" class="font-medium">--</span>
+              </div>
+              <span id="chain-a-house-verdict" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 self-start sm:self-center shrink-0">--</span>
+            </div>
           </div>
 
           <!-- Star B 鏈 -->
-          <div class="rounded-xl bg-void/85 border border-cyan-500/25 p-4">
-            <div class="text-xs font-bold text-cyan-400 mb-2.5 flex items-center justify-between">
-              <span>【用鏈】事件上升／月宿主 (Star B) 氣數流向：</span>
+          <div class="rounded-xl bg-void/85 border border-cyan-500/25 p-4 space-y-3">
+            <div class="text-xs font-bold text-cyan-400 flex flex-wrap items-center justify-between gap-2">
+              <span>【用鏈】事件上升／月宿主 (Star B) 九曜宿度流向：</span>
               <span id="chain-b-summary" class="font-normal text-slate-400"></span>
             </div>
             <div id="chain-b-nodes" class="flex flex-wrap items-center gap-2"></div>
+            <!-- 平行後天十二宮鎖鏈 B -->
+            <div class="pt-2.5 border-t border-slate-800/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-cyan-950/15 rounded-lg px-3 py-2">
+              <div class="text-xs text-cyan-200/90">
+                <span class="font-bold text-cyan-400">🏛️ 用・後天十二宮鎖鏈：</span>
+                <span id="chain-b-houses" class="font-medium">--</span>
+              </div>
+              <span id="chain-b-house-verdict" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 self-start sm:self-center shrink-0">--</span>
+            </div>
+          </div>
+
+          <!-- 第三列：自選 27 宿指定起始定位鏈 -->
+          <div class="rounded-xl bg-void/85 border border-emerald-500/35 p-4 space-y-3">
+            <div class="text-xs font-bold text-emerald-400 flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <span>【自選宿鏈】指定 27 宿起點流向：</span>
+                <select id="custom-nak-select" onchange="runCalculation()" class="bg-nebula border border-emerald-500/50 rounded-lg px-2.5 py-1 text-xs font-bold text-emerald-200 focus:border-emerald-400 focus:outline-none cursor-pointer">
+                  <!-- 由 JS 動態填充 #01 ~ #27 -->
+                </select>
+              </div>
+              <span id="chain-c-summary" class="font-normal text-slate-400"></span>
+            </div>
+            <div id="chain-c-nodes" class="flex flex-wrap items-center gap-2"></div>
+            <!-- 平行後天十二宮鎖鏈 C -->
+            <div class="pt-2.5 border-t border-slate-800/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-emerald-950/15 rounded-lg px-3 py-2">
+              <div class="text-xs text-emerald-200/90">
+                <span class="font-bold text-emerald-400">🏛️ 自選宿・後天十二宮鎖鏈：</span>
+                <span id="chain-c-houses" class="font-medium">--</span>
+              </div>
+              <span id="chain-c-house-verdict" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 self-start sm:self-center shrink-0">--</span>
+            </div>
           </div>
         </div>
       </div>
@@ -553,6 +652,24 @@
       { name: "雙魚座", lord: "木星", element: 3 }
     ];
 
+    // 後天十二宮定義（命宮 ～ 玄秘宮）
+    const HOUSES_12 = [
+      { num: 1,  name: "第1命宮",   short: "命宮",   cat: "強宮", theme: "自身主體、行動發起", badge: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
+      { num: 2,  name: "第2財帛宮", short: "財帛宮", cat: "財宮", theme: "正財資源、物質累積", badge: "bg-amber-500/20 text-amber-300 border-amber-500/40" },
+      { num: 3,  name: "第3兄弟宮", short: "兄弟宮", cat: "果宮", theme: "溝通文書、奔波協商", badge: "bg-sky-500/20 text-sky-300 border-sky-500/40" },
+      { num: 4,  name: "第4田宅宮", short: "田宅宮", cat: "強宮", theme: "根基歸宿、房產家庭", badge: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
+      { num: 5,  name: "第5男女宮", short: "男女宮", cat: "吉宮", theme: "才華投資、貴人機遇", badge: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
+      { num: 6,  name: "第6奴僕宮", short: "奴僕宮", cat: "惡宮", theme: "勞碌阻礙、是非病痛", badge: "bg-rose-500/20 text-rose-300 border-rose-500/40" },
+      { num: 7,  name: "第7夫妻宮", short: "夫妻宮", cat: "強宮", theme: "合夥契約、對外關係", badge: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
+      { num: 8,  name: "第8疾厄宮", short: "疾厄宮", cat: "惡宮", theme: "突發危機、暗損波折", badge: "bg-rose-500/20 text-rose-300 border-rose-500/40" },
+      { num: 9,  name: "第9遷移宮", short: "遷移宮", cat: "吉宮", theme: "遠行跨界、福澤貴人", badge: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
+      { num: 10, name: "第10官祿宮",short: "官祿宮", cat: "強宮", theme: "事業名聲、掌權成就", badge: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
+      { num: 11, name: "第11福德宮",short: "福德宮", cat: "利宮", theme: "願望達成、豐厚獲利", badge: "bg-amber-500/20 text-amber-300 border-amber-500/40" },
+      { num: 12, name: "第12玄秘宮",short: "玄秘宮", cat: "惡宮", theme: "消耗隱退、幕後破耗", badge: "bg-rose-500/20 text-rose-300 border-rose-500/40" }
+    ];
+
+    const STORAGE_KEY = "sidereal_27nak_dasha_records_v1";
+
     const NAK_LORDS = ["計都", "金星", "太陽", "月亮", "火星", "羅睺", "木星", "土星", "水星"];
 
     // Vimshottari 120年大限固定年數表
@@ -658,6 +775,16 @@
         });
       });
 
+      // 填充步驟三「自選 27 宿起點」下拉選單 (#01 ~ #27)
+      const customNakSel = document.getElementById("custom-nak-select");
+      NAKSHATRAS.forEach(nak => {
+        const opt = document.createElement("option");
+        opt.value = nak.idx;
+        const numStr = String(nak.idx + 1).padStart(2, '0');
+        opt.textContent = `#${numStr} ${nak.cn} (${nak.sanskrit}・${nak.lord}度)`;
+        customNakSel.appendChild(opt);
+      });
+
       // 動態生成九曜輸入框並預填數據
       const grid = document.getElementById("planets-input-grid");
       NINE_PLANETS.forEach((p, i) => {
@@ -685,8 +812,178 @@
       });
 
       renderReferenceTable();
+      refreshSavedRecordsDropdown();
       // 啟動即載入範例一並立即運算，確保使用者打開頁面就看到完整結果
       loadPresetCase(1);
+    }
+
+    // =========================================================================
+    // 2.5 資料存檔、載入、匯出與匯入系統 (LocalStorage & JSON)
+    // =========================================================================
+    function showStorageToast(msg, isError = false) {
+      const el = document.getElementById("storage-toast");
+      el.textContent = msg;
+      el.className = `text-xs font-bold transition-opacity duration-300 opacity-100 ${isError ? 'text-rose-400' : 'text-emerald-400'}`;
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => {
+        el.classList.remove("opacity-100");
+        el.classList.add("opacity-0");
+      }, 3200);
+    }
+
+    function captureCurrentChartState(customTitle = "") {
+      const title = customTitle.trim() || document.getElementById("record-title-input").value.trim() || `雙盤紀錄_${new Date().toLocaleString('zh-TW', { hour12: false }).replace(/[\/\s:]/g, '')}`;
+      return {
+        version: "1.0",
+        title,
+        savedAt: new Date().toISOString(),
+        calcMode,
+        rateMode: document.getElementById("rate-mode").value,
+        houseBaseMode: document.getElementById("house-base-mode").value,
+        customNakIdx: parseInt(document.getElementById("custom-nak-select").value) || 0,
+        eventAge: parseFloat(document.getElementById("event-age").value) || 0,
+        natalAscLon: getLonFromControls("natal-asc"),
+        natalMoonLon: getLonFromControls("natal-moon"),
+        eventAscLon: getLonFromControls("event-asc"),
+        planetDegrees: { ...planetDegrees }
+      };
+    }
+
+    function applyChartState(state) {
+      if (!state || typeof state !== "object") {
+        showStorageToast("⚠️ 檔案格式錯誤，無法載入", true);
+        return;
+      }
+      if (state.title) {
+        document.getElementById("record-title-input").value = state.title;
+      }
+      if (state.rateMode) {
+        document.getElementById("rate-mode").value = String(state.rateMode);
+      }
+      if (state.houseBaseMode) {
+        document.getElementById("house-base-mode").value = state.houseBaseMode;
+      }
+      if (typeof state.customNakIdx === "number") {
+        document.getElementById("custom-nak-select").value = String(state.customNakIdx);
+      }
+      if (typeof state.eventAge === "number") {
+        document.getElementById("event-age").value = state.eventAge;
+      }
+      if (typeof state.natalAscLon === "number") {
+        setControlsFromLon("natal-asc", state.natalAscLon);
+      }
+      if (typeof state.natalMoonLon === "number") {
+        setControlsFromLon("natal-moon", state.natalMoonLon);
+      }
+      if (typeof state.eventAscLon === "number") {
+        setControlsFromLon("event-asc", state.eventAscLon);
+      }
+      if (state.planetDegrees) {
+        setAllPlanetsUI(state.planetDegrees);
+      }
+      setCalcMode(state.calcMode === "moon" ? "moon" : "asc");
+    }
+
+    function getLocalRecordsMap() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function refreshSavedRecordsDropdown(selectedKey = "") {
+      const sel = document.getElementById("saved-records-select");
+      const records = getLocalRecordsMap();
+      const keys = Object.keys(records);
+      sel.innerHTML = `<option value="">-- 選擇已儲存案例 (${keys.length}筆) --</option>`;
+      keys.forEach(k => {
+        const opt = document.createElement("option");
+        opt.value = k;
+        const modeTag = records[k].calcMode === "moon" ? "月宿" : "上升";
+        opt.textContent = `[${modeTag}] ${records[k].title} (${records[k].eventAge}歲)`;
+        if (k === selectedKey) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    function saveChartToLocal() {
+      const state = captureCurrentChartState();
+      const records = getLocalRecordsMap();
+      records[state.title] = state;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+        document.getElementById("record-title-input").value = state.title;
+        refreshSavedRecordsDropdown(state.title);
+        showStorageToast(`✅ 已儲存案例：「${state.title}」`);
+      } catch (e) {
+        showStorageToast("⚠️ 瀏覽器儲存空間不足，請改用匯出 JSON", true);
+      }
+    }
+
+    function loadChartFromLocal() {
+      const key = document.getElementById("saved-records-select").value;
+      if (!key) {
+        showStorageToast("⚠️ 請先從下拉選單選擇要載入的案例", true);
+        return;
+      }
+      const records = getLocalRecordsMap();
+      if (records[key]) {
+        applyChartState(records[key]);
+        showStorageToast(`📂 已載入案例：「${key}」`);
+      }
+    }
+
+    function deleteChartFromLocal() {
+      const key = document.getElementById("saved-records-select").value;
+      if (!key) {
+        showStorageToast("⚠️ 請先選擇要刪除的案例", true);
+        return;
+      }
+      const records = getLocalRecordsMap();
+      delete records[key];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      refreshSavedRecordsDropdown();
+      showStorageToast(`🗑️ 已刪除案例：「${key}」`);
+    }
+
+    function exportChartJSON() {
+      const state = captureCurrentChartState();
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${state.title.replace(/[\\/:*?"<>|]/g, "_")}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showStorageToast(`⬇️ 已匯出 JSON 檔案：「${a.download}」`);
+    }
+
+    function importChartJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          applyChartState(parsed);
+          // 同步存入本地清單方便下次使用
+          if (parsed.title) {
+            const records = getLocalRecordsMap();
+            records[parsed.title] = parsed;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+            refreshSavedRecordsDropdown(parsed.title);
+          }
+          showStorageToast(`⬆️ 成功匯入並載入：「${parsed.title || file.name}」`);
+        } catch (err) {
+          showStorageToast("⚠️ JSON 檔案解析失敗，請確認檔案格式", true);
+        }
+        event.target.value = "";
+      };
+      reader.readAsText(file);
     }
 
     function setCalcMode(mode) {
@@ -796,6 +1093,7 @@
     function loadPresetCase(caseId) {
       if (caseId === 1) {
         // 範例一：商業簽約吉局（雙鏈匯聚木星、第2足利足、Pushkara吉足）
+        document.getElementById("record-title-input").value = "範例一：商業簽約吉局";
         document.getElementById("rate-mode").value = "180";
         setControlsFromLon("natal-asc", 15.3333);  // 白羊 15°20' (胃宿)
         setControlsFromLon("natal-moon", 43.3333); // 金牛 13°20' (畢宿)
@@ -803,18 +1101,19 @@
         setControlsFromLon("event-asc", 48.0);     // 金牛 18°00' (畢宿第3足，Pushkara吉足，月度)
         setAllPlanetsUI({
           "太陽": 35.0,
-          "月亮": 195.0, // 亢宿(羅睺度)
+          "月亮": 195.0, // 天秤 (亢宿・羅睺度)
           "火星": 280.0,
-          "水星": 85.0,  // 井宿(木星度)
-          "木星": 84.0,  // 井宿(木星自坐本宿！)
+          "水星": 85.0,  // 雙子 (井宿・木星度)
+          "木星": 84.0,  // 雙子 (井宿・木星自坐本宿！)
           "金星": 46.5,
           "土星": 325.0,
-          "羅睺": 82.0,  // 井宿(木星度)
+          "羅睺": 82.0,  // 雙子 (井宿・木星度)
           "計都": 262.0
         });
         setCalcMode("asc");
       } else if (caseId === 2) {
         // 範例二：水火危足破局（事件上升踩 Gandanta 危足、第4足解脫足、流年火土填實）
+        document.getElementById("record-title-input").value = "範例二：突發變動考驗";
         document.getElementById("rate-mode").value = "180";
         setControlsFromLon("natal-asc", 10.0);     // 白羊 10°00' (婁宿)
         setControlsFromLon("natal-moon", 215.0);   // 天蠍 5°00' (房宿)
@@ -834,6 +1133,7 @@
         setCalcMode("asc");
       } else if (caseId === 3) {
         // 範例三：月宿 Vimshottari 大限應期（雙月宿交會模式）
+        document.getElementById("record-title-input").value = "範例三：月宿大限應期";
         setControlsFromLon("natal-asc", 125.0);
         setControlsFromLon("natal-moon", 44.0);    // 金牛 14°00' (畢宿 Rohini，月度)
         document.getElementById("event-age").value = "32.5"; // 推出進入木星大限 (Star A = 木星)
@@ -854,6 +1154,7 @@
     }
 
     function randomizeEventChart() {
+      document.getElementById("record-title-input").value = `隨機推演盤_${Math.floor(1000 + Math.random() * 9000)}`;
       const randLon = () => Math.random() * 360;
       setControlsFromLon("event-asc", randLon());
       const rahu = randLon();
@@ -872,7 +1173,7 @@
     }
 
     // =========================================================================
-    // 4. 核心占星演算法（27宿、108足、D9、宿主定位鏈、Vimshottari）
+    // 4. 核心占星演算法（27宿、108足、D9、後天十二宮、宿主定位鏈、Vimshottari）
     // =========================================================================
     function formatLon(lon) {
       const norm = ((lon % 360) + 360) % 360;
@@ -944,8 +1245,29 @@
       };
     }
 
-    function traceDispositorChain(startLord) {
-      const steps = [];
+    // 整宮制計算後天十二宮（命宮 ~ 玄秘宮）
+    function getHouseInfo(planetSignIdx, baseAscSignIdx) {
+      const houseIdx = (planetSignIdx - baseAscSignIdx + 12) % 12; // 0 ~ 11
+      return HOUSES_12[houseIdx];
+    }
+
+    function traceDispositorChain(startPointInfo, baseAscSignIdx, originLabel) {
+      const startLord = startPointInfo.lord;
+      const originHouseObj = getHouseInfo(startPointInfo.signIdx, baseAscSignIdx);
+      const originNode = {
+        isOrigin: true,
+        planet: startLord,
+        originTitle: originLabel,
+        nakNum: String(startPointInfo.nakIdx + 1).padStart(2, '0'),
+        nakShort: startPointInfo.nakObj.cn,
+        nak: `#${String(startPointInfo.nakIdx + 1).padStart(2, '0')} ${startPointInfo.nakObj.cn}(${startPointInfo.nakObj.sanskrit})`,
+        house: originHouseObj,
+        d9: startPointInfo.d9SignName,
+        d9Dignity: "",
+        tag: "起點宿主・氣數發端"
+      };
+
+      const steps = [originNode];
       const visited = new Set();
       let curr = startLord;
       let status = "normal";
@@ -954,12 +1276,17 @@
       while (true) {
         const pLon = planetDegrees[curr];
         const info = analyzePoint(pLon, curr);
+        const houseObj = getHouseInfo(info.signIdx, baseAscSignIdx);
         const nextLord = info.lord;
 
         if (nextLord === curr) {
           steps.push({
+            isOrigin: false,
             planet: curr,
-            nak: `${info.nakObj.cn}(${info.nakObj.sanskrit})`,
+            nakNum: String(info.nakIdx + 1).padStart(2, '0'),
+            nakShort: info.nakObj.cn,
+            nak: `#${String(info.nakIdx + 1).padStart(2, '0')} ${info.nakObj.cn}(${info.nakObj.sanskrit})`,
+            house: houseObj,
             d9: info.d9SignName,
             d9Dignity: info.d9Dignity,
             tag: "自坐本宿・終局落地"
@@ -971,8 +1298,12 @@
 
         if (visited.has(curr)) {
           steps.push({
+            isOrigin: false,
             planet: curr,
-            nak: `${info.nakObj.cn}(${info.nakObj.sanskrit})`,
+            nakNum: String(info.nakIdx + 1).padStart(2, '0'),
+            nakShort: info.nakObj.cn,
+            nak: `#${String(info.nakIdx + 1).padStart(2, '0')} ${info.nakObj.cn}(${info.nakObj.sanskrit})`,
+            house: houseObj,
             d9: info.d9SignName,
             d9Dignity: info.d9Dignity,
             tag: "形成閉環・循環拉扯"
@@ -984,8 +1315,12 @@
 
         visited.add(curr);
         steps.push({
+          isOrigin: false,
           planet: curr,
-          nak: `${info.nakObj.cn}(${info.nakObj.sanskrit})`,
+          nakNum: String(info.nakIdx + 1).padStart(2, '0'),
+          nakShort: info.nakObj.cn,
+          nak: `#${String(info.nakIdx + 1).padStart(2, '0')} ${info.nakObj.cn}(${info.nakObj.sanskrit})`,
+          house: houseObj,
           d9: info.d9SignName,
           d9Dignity: info.d9Dignity,
           tag: null
@@ -1094,7 +1429,7 @@
       const eventMoonInfo = analyzePoint(planetDegrees["月亮"]);
       const moonBadge = document.getElementById("event-moon-quick-badge");
       if (moonBadge) {
-        moonBadge.textContent = `事件月亮：${eventMoonInfo.lonStr}・${eventMoonInfo.nakObj.cn}(${eventMoonInfo.lord}度)`;
+        moonBadge.textContent = `事件月亮：${eventMoonInfo.lonStr}・#${String(eventMoonInfo.nakIdx + 1).padStart(2, '0')} ${eventMoonInfo.nakObj.cn}(${eventMoonInfo.lord}度)`;
       }
 
       const age = parseFloat(document.getElementById("event-age").value) || 0;
@@ -1122,12 +1457,15 @@
         eventInfo = eventMoonInfo;        // 事件盤月亮所在星宿
         starA = dasha.mahaLord;
         starB = eventInfo.lord;
-        subdashaText = `出生月宿：${dasha.birthNakObj.cn} ｜ 當前大限進度 ${dasha.progressPct}% ｜ 次限主：${dasha.antarLord}`;
+        subdashaText = `出生月宿：#${String(dasha.birthNakObj.idx + 1).padStart(2, '0')} ${dasha.birthNakObj.cn} ｜ 當前大限進度 ${dasha.progressPct}% ｜ 次限主：${dasha.antarLord}`;
       }
 
-      // 渲染步驟 1
+      // 渲染步驟 1（加上 #01~#27 星宿編號）
+      const natalNakNum = String(natalInfo.nakIdx + 1).padStart(2, '0');
+      const eventNakNum = String(eventInfo.nakIdx + 1).padStart(2, '0');
+
       document.getElementById("res-natal-lon").textContent = natalInfo.lonStr;
-      document.getElementById("res-natal-nak").textContent = `${natalInfo.nakObj.cn} (${natalInfo.nakObj.sanskrit})`;
+      document.getElementById("res-natal-nak").textContent = `#${natalNakNum} ${natalInfo.nakObj.cn} (${natalInfo.nakObj.sanskrit})`;
       const subEl = document.getElementById("res-natal-subdasha");
       if (subdashaText) {
         subEl.textContent = subdashaText;
@@ -1136,15 +1474,15 @@
         subEl.classList.add("hidden");
       }
 
-      document.getElementById("res-star-a").textContent = starA;
-      document.getElementById("res-star-a").className = `text-base font-bold ${PLANET_NATURE[starA].color}`;
+      document.getElementById("res-star-a").textContent = `${starA}（#${natalNakNum} ${natalInfo.nakObj.cn}宿主）`;
+      document.getElementById("res-star-a").className = `text-sm sm:text-base font-bold ${PLANET_NATURE[starA].color}`;
       document.getElementById("res-natal-meaning").textContent = natalInfo.nakObj.meaning;
       document.getElementById("res-natal-body").textContent = natalInfo.nakObj.body;
 
       document.getElementById("res-event-lon").textContent = eventInfo.lonStr;
-      document.getElementById("res-event-nak").textContent = `${eventInfo.nakObj.cn} (${eventInfo.nakObj.sanskrit})`;
-      document.getElementById("res-star-b").textContent = starB;
-      document.getElementById("res-star-b").className = `text-base font-bold ${PLANET_NATURE[starB].color}`;
+      document.getElementById("res-event-nak").textContent = `#${eventNakNum} ${eventInfo.nakObj.cn} (${eventInfo.nakObj.sanskrit})`;
+      document.getElementById("res-star-b").textContent = `${starB}（#${eventNakNum} ${eventInfo.nakObj.cn}宿主）`;
+      document.getElementById("res-star-b").className = `text-sm sm:text-base font-bold ${PLANET_NATURE[starB].color}`;
       document.getElementById("res-event-meaning").textContent = eventInfo.nakObj.meaning;
       document.getElementById("res-event-body").textContent = eventInfo.nakObj.body;
 
@@ -1170,12 +1508,25 @@
         </div>
       `;
 
-      // 渲染步驟 3 (九曜宿主鏈)
-      const chainA = traceDispositorChain(starA);
-      const chainB = traceDispositorChain(starB);
+      // 渲染步驟 3 (九曜宿主鏈與後天十二宮雙軌並列，從步驟一所落星宿起頭)
+      const houseBaseMode = document.getElementById("house-base-mode").value;
+      const baseAscSignIdx = houseBaseMode === "natal" ? natalAscPreview.signIdx : eventAscPreview.signIdx;
 
-      renderChainNodes("chain-a-nodes", "chain-a-summary", chainA);
-      renderChainNodes("chain-b-nodes", "chain-b-summary", chainB);
+      const originLabelA = calcMode === "asc" ? "本命限度起點" : "本命大限映射起點";
+      const originLabelB = calcMode === "asc" ? "事件上升起點" : "事件月宿起點";
+
+      const chainA = traceDispositorChain(natalInfo, baseAscSignIdx, originLabelA);
+      const chainB = traceDispositorChain(eventInfo, baseAscSignIdx, originLabelB);
+
+      // 第三列：自選 27 宿起點定位鏈（取該宿中點刻度定位所屬星座與 D9）
+      const customNakIdx = parseInt(document.getElementById("custom-nak-select").value) || 0;
+      const customNakMidLon = (customNakIdx * 800 + 400) / 60.0;
+      const customNakInfo = analyzePoint(customNakMidLon);
+      const chainC = traceDispositorChain(customNakInfo, baseAscSignIdx, "自選星宿起點");
+
+      renderChainNodes("chain-a-nodes", "chain-a-summary", "chain-a-houses", "chain-a-house-verdict", chainA);
+      renderChainNodes("chain-b-nodes", "chain-b-summary", "chain-b-houses", "chain-b-house-verdict", chainB);
+      renderChainNodes("chain-c-nodes", "chain-c-summary", "chain-c-houses", "chain-c-house-verdict", chainC);
 
       const convBadge = document.getElementById("res-chain-convergence");
       if (chainA.endPlanet === chainB.endPlanet) {
@@ -1191,48 +1542,68 @@
     }
 
     function renderPadaCard(prefix, info) {
-      document.getElementById(`res-${prefix}-pada-num`).textContent = `第 ${info.padaIdx} / 108 足`;
+      document.getElementById(`res-${prefix}-pada-num`).textContent = `全局第 ${info.padaIdx} 足 / 108`;
       const purEl = document.getElementById(`res-${prefix}-purushartha`);
       purEl.textContent = info.purushartha.label;
       purEl.className = `text-sm font-bold ${info.purushartha.tone}`;
-      document.getElementById(`res-${prefix}-d9`).textContent = `九分盤 D9 落點：${info.d9SignName}（${info.purushartha.desc}）`;
+      document.getElementById(`res-${prefix}-d9`).textContent = `九分盤 D9：${info.d9SignName}（主星：${SIGNS[info.d9SignIdx].lord}）`;
+      document.getElementById(`res-${prefix}-pada-desc`).textContent = info.purushartha.desc;
 
       const badgesEl = document.getElementById(`res-${prefix}-pada-badges`);
-      badgesEl.innerHTML = "";
-
+      const badges = [];
       if (info.isGandanta) {
-        badgesEl.innerHTML += `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-500/25 text-rose-300 border border-rose-500/50">⚠️ Gandanta 水火危足</span>`;
+        badges.push(`<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/25 text-rose-300 border border-rose-500/40">⚠️ Gandanta 水火危足</span>`);
       }
       if (info.isPushkara) {
-        badgesEl.innerHTML += `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/25 text-emerald-300 border border-emerald-500/50">🌟 Pushkara 滋養吉足</span>`;
+        badges.push(`<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/25 text-emerald-300 border border-emerald-500/40">🌟 Pushkara 滋養吉足</span>`);
       }
       if (info.isVargottama) {
-        badgesEl.innerHTML += `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-500/25 text-amber-300 border border-amber-500/50">👑 Vargottama 同宮強勢足</span>`;
+        badges.push(`<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/25 text-amber-300 border border-amber-500/40">👑 Vargottama 同宮足</span>`);
       }
-      if (!info.isGandanta && !info.isPushkara && !info.isVargottama) {
-        badgesEl.innerHTML += `<span class="px-2 py-0.5 rounded text-[11px] bg-slate-800 text-slate-400 border border-slate-700">常態刻度足</span>`;
+      if (badges.length === 0) {
+        badges.push(`<span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-400 border border-slate-700">常規平性足位</span>`);
       }
+      badgesEl.innerHTML = badges.join("");
     }
 
-    function renderChainNodes(containerId, summaryId, chainObj) {
+    function renderChainNodes(containerId, summaryId, housesId, verdictId, chainObj) {
       const container = document.getElementById(containerId);
       const summary = document.getElementById(summaryId);
+      const housesEl = document.getElementById(housesId);
+      const verdictEl = document.getElementById(verdictId);
       container.innerHTML = "";
 
-      summary.textContent = `共 ${chainObj.steps.length} 步 ➔ ${chainObj.status === 'self' ? '自坐本宿落地' : '形成循環閉環'}`;
+      const planetStepsCount = chainObj.steps.length - 1;
+      summary.textContent = `起點宿 ➔ 傳遞 ${planetStepsCount} 步 ➔ ${chainObj.status === 'self' ? '自坐本宿落地' : '形成循環閉環'}`;
 
       chainObj.steps.forEach((step, i) => {
         const pStyle = PLANET_NATURE[step.planet];
+        const hStyle = step.house;
         const node = document.createElement("div");
-        node.className = `flex flex-col px-3 py-2 rounded-lg border ${step.tag ? 'bg-slate-800/95 border-gold/60 shadow-md shadow-gold/10' : 'bg-nebula border-slate-700'}`;
-        node.innerHTML = `
-          <div class="flex items-center gap-1.5">
-            <span class="text-xs font-bold ${pStyle.color}">${step.planet}</span>
-            <span class="text-[10px] text-slate-400">落 ${step.nak}</span>
-          </div>
-          <div class="text-[10px] text-slate-300 mt-0.5">D9 ${step.d9}</div>
-          ${step.tag ? `<span class="mt-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-gold/20 text-goldLight">${step.tag}</span>` : ''}
-        `;
+
+        if (step.isOrigin) {
+          node.className = "flex flex-col px-3 py-2 rounded-lg border border-dashed border-purple-400/60 bg-purple-950/25 shadow-sm";
+          node.innerHTML = `
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-[11px] font-bold text-purple-300">📍 ${step.originTitle}</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.2 rounded border ${hStyle.badge}">${hStyle.name}・${hStyle.cat}</span>
+            </div>
+            <div class="text-[11px] text-slate-100 mt-1">落 <span class="text-goldLight font-bold">${step.nak}</span></div>
+            <div class="text-[10px] text-slate-300 mt-0.5">取宿主：<span class="font-bold ${pStyle.color}">${step.planet}</span> ｜ D9 ${step.d9}</div>
+            <span class="mt-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-200 text-center">${step.tag}</span>
+          `;
+        } else {
+          node.className = `flex flex-col px-3 py-2 rounded-lg border ${step.tag ? 'bg-slate-800/95 border-gold/60 shadow-md shadow-gold/10' : 'bg-nebula border-slate-700'}`;
+          node.innerHTML = `
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-bold ${pStyle.color}">${step.planet}</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.2 rounded border ${hStyle.badge}">${hStyle.name}・${hStyle.cat}</span>
+            </div>
+            <div class="text-[11px] text-slate-200 mt-1">落 <span class="text-goldLight font-medium">${step.nak}</span></div>
+            <div class="text-[10px] text-slate-400 mt-0.5">宮義：${hStyle.theme} ｜ D9 ${step.d9}</div>
+            ${step.tag ? `<span class="mt-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-gold/20 text-goldLight text-center">${step.tag}</span>` : ''}
+          `;
+        }
         container.appendChild(node);
 
         if (i < chainObj.steps.length - 1) {
@@ -1242,11 +1613,37 @@
           container.appendChild(arrow);
         }
       });
+
+      // 渲染平行的後天十二宮鎖鏈（包含起點星宿編號與宮位，一路串接至終點）
+      const houseChainStr = chainObj.steps.map(s => {
+        if (s.isOrigin) {
+          return `[起點]${s.house.name}(#${s.nakNum}${s.nakShort}➔${s.planet})`;
+        }
+        return `${s.house.name}(${s.planet}・#${s.nakNum}${s.nakShort})`;
+      }).join(" ➔ ");
+      housesEl.textContent = houseChainStr;
+
+      const endHouse = chainObj.steps[chainObj.steps.length - 1].house;
+      if ([6, 8, 12].includes(endHouse.num)) {
+        verdictEl.textContent = `⚠️ 終落三惡宮（${endHouse.short}）：防損耗波折`;
+        verdictEl.className = "text-[11px] font-bold px-2.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 self-start sm:self-center shrink-0";
+      } else if ([2, 11].includes(endHouse.num)) {
+        verdictEl.textContent = `💰 終落財利宮（${endHouse.short}）：主實質獲利`;
+        verdictEl.className = "text-[11px] font-bold px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 self-start sm:self-center shrink-0";
+      } else if ([1, 4, 5, 7, 9, 10].includes(endHouse.num)) {
+        verdictEl.textContent = `🏛️ 終落強吉宮（${endHouse.short}）：根基穩固成局`;
+        verdictEl.className = "text-[11px] font-bold px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 self-start sm:self-center shrink-0";
+      } else {
+        verdictEl.textContent = `📜 終落果宮（${endHouse.short}）：重文書溝通變動`;
+        verdictEl.className = "text-[11px] font-bold px-2.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40 self-start sm:self-center shrink-0";
+      }
     }
 
     function generateFinalReport(natalInfo, eventInfo, starAInfo, starBInfo, chainA, chainB) {
       const starA = natalInfo.lord;
       const starB = eventInfo.lord;
+      const endHouseA = chainA.steps[chainA.steps.length - 1].house;
+      const endHouseB = chainB.steps[chainB.steps.length - 1].house;
 
       // 1. 檢查流年填實 (Transit Hit)
       const transitHits = [];
@@ -1278,6 +1675,18 @@
       } else if (endBNature.includes("煞") || endBNature.includes("凶")) {
         score -= 15;
         notes.push(`<strong>事件終局落煞星（${chainB.endPlanet}）：</strong>宿主鏈最終導向凶煞，過程易有阻滯、損耗或突發波折。`);
+      }
+
+      // 整合後天十二宮鎖鏈結局判讀
+      if ([6, 8, 12].includes(endHouseB.num)) {
+        score -= 12;
+        notes.push(`<span class="text-rose-300 font-bold">後天十二宮惡宮警訊：</span>用鏈最終落入 <strong>${endHouseB.name}</strong>（${endHouseB.theme}），防範暗損、糾紛或精力消耗。`);
+      } else if ([2, 11].includes(endHouseB.num)) {
+        score += 10;
+        notes.push(`<span class="text-amber-300 font-bold">後天十二宮財利落點：</span>用鏈最終匯入 <strong>${endHouseB.name}</strong>（${endHouseB.theme}），事體能轉化為實際物質收益。`);
+      } else if ([1, 4, 5, 7, 9, 10].includes(endHouseB.num)) {
+        score += 8;
+        notes.push(`<span class="text-emerald-300 font-bold">後天十二宮強吉落點：</span>用鏈最終停駐 <strong>${endHouseB.name}</strong>（${endHouseB.theme}），事體根基穩固、名正言順。`);
       }
 
       if (eventInfo.isGandanta) {
