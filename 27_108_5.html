@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>27宿恆星制占星九曜與108足雙盤事件推演系統</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            void: '#0b0f19',
+            nebula: '#131a2b',
+            card: '#182136',
+            gold: '#d4af37',
+            goldLight: '#f3d97d',
+            amberGlow: '#f59e0b',
+            crimson: '#ef4444',
+            emerald: '#10b981',
+            cyanGlow: '#06b6d4',
+          },
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'sans-serif'],
+            serif: ['"Noto Serif TC"', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0b0f19;
+      background-image: 
+        radial-gradient(circle at 12% 15%, rgba(212, 175, 55, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 88% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 45%);
+      color: #e2e8f0;
+    }
+    .glass-card {
+      background: rgba(24, 33, 54, 0.82);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.22);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    }
+    .tab-active {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.28), rgba(212, 175, 55, 0.08));
+      border-color: #d4af37;
+      color: #f3d97d;
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0b0f19; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+    input[type="number"]::-webkit-inner-spin-button { opacity: 0.7; }
+  </style>
+</head>
+<body class="min-h-screen font-sans antialiased selection:bg-gold selection:text-void">
+
+  <!-- 頂部導覽列 -->
+  <header class="sticky top-0 z-40 border-b border-gold/25 bg-void/92 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold to-amber-700 flex items-center justify-center text-void font-serif font-bold text-xl shadow-lg shadow-gold/20 shrink-0">
+          宿
+        </div>
+        <div>
+          <h1 class="text-base sm:text-xl font-serif font-bold text-goldLight tracking-wide">
+            27宿恆星制占星・九曜與108足雙盤事件推演系統
+          </h1>
+          <p class="text-xs text-slate-400">
+            支援【上升命度行限】與【月宿 Vimshottari 大限】雙模式 × 108足微觀濾鏡 × 九曜定位鏈
+          </p>
+        </div>
+      </div>
+
+      <!-- 三大分頁切換 -->
+      <nav class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-center">
+        <button onclick="switchTab('calc')" id="tab-btn-calc" class="tab-active px-3.5 py-2 rounded-lg border border-slate-700 text-xs sm:text-sm font-medium transition-all cursor-pointer">
+          ⚡ 雙盤即時推演儀
+        </button>
+        <button onclick="switchTab('ref')" id="tab-btn-ref" class="px-3.5 py-2 rounded-lg border border-slate-700 bg-nebula/60 text-slate-300 hover:border-gold/50 text-xs sm:text-sm font-medium transition-all cursor-pointer">
+          📜 27宿與108足速查表
+        </button>
+        <button onclick="switchTab('sop')" id="tab-btn-sop" class="px-3.5 py-2 rounded-lg border border-slate-700 bg-nebula/60 text-slate-300 hover:border-gold/50 text-xs sm:text-sm font-medium transition-all cursor-pointer">
+          🧭 推演 SOP 心法指南
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+
+    <!-- ========================================== -->
+    <!-- 分頁一：雙盤即時推演儀                       -->
+    <!-- ========================================== -->
+    <section id="view-calc" class="space-y-6">
+      
+      <!-- 雙推演模式切換列 + 預設範例測試鈕 -->
+      <div class="glass-card rounded-2xl p-4 sm:p-5 border-gold/40 space-y-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-gold">選擇核心推演軸線（系統已預填完整天象供即時測試）</span>
+            <h2 class="text-base sm:text-lg font-serif font-bold text-white mt-0.5">雙盤推演模式切換（體用基準點）</h2>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full lg:w-auto">
+            <button onclick="setCalcMode('asc')" id="mode-btn-asc" class="px-4 py-2.5 rounded-xl border text-left transition-all cursor-pointer bg-gold/20 border-gold text-goldLight shadow-md shadow-gold/10">
+              <div class="text-xs sm:text-sm font-bold flex items-center gap-1.5">
+                <span>🧭 模式一：上升命度行限軸</span>
+              </div>
+              <div class="text-[11px] text-slate-300 mt-0.5">本命上升推進度主 ＋ 流年事件上升宿主</div>
+            </button>
+            <button onclick="setCalcMode('moon')" id="mode-btn-moon" class="px-4 py-2.5 rounded-xl border text-left transition-all cursor-pointer bg-nebula/80 border-slate-700 text-slate-300 hover:border-purple-400/50">
+              <div class="text-xs sm:text-sm font-bold flex items-center gap-1.5">
+                <span>🌙 模式二：月宿 Vimshottari 大限軸</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-0.5">本命月宿120年大限主 ＋ 流年事件月宿主</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 一鍵載入預設案例列 -->
+        <div class="pt-3 border-t border-slate-700/70 flex flex-wrap items-center justify-between gap-2">
+          <span class="text-xs text-slate-400">🧪 快速載入實戰案例測試：</span>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="loadPresetCase(1)" class="px-3 py-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-xs text-emerald-300 border border-emerald-500/40 transition cursor-pointer">
+              範例一：商業簽約吉局（雙鏈匯聚木星吉足）
+            </button>
+            <button onclick="loadPresetCase(2)" class="px-3 py-1.5 rounded-lg bg-rose-950/80 hover:bg-rose-900 text-xs text-rose-300 border border-rose-500/40 transition cursor-pointer">
+              範例二：突發變動考驗（水火危足＋火土填實）
+            </button>
+            <button onclick="loadPresetCase(3)" class="px-3 py-1.5 rounded-lg bg-purple-950/80 hover:bg-purple-900 text-xs text-purple-300 border border-purple-500/40 transition cursor-pointer">
+              範例三：月宿大限應期（雙月宿交會模式）
+            </button>
+            <button onclick="randomizeEventChart()" class="px-3 py-1.5 rounded-lg bg-cyan-950/80 hover:bg-cyan-900 text-xs text-cyan-300 border border-cyan-500/40 transition cursor-pointer">
+              🎲 隨機生成盤面
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 輸入控制面板 -->
+      <div class="glass-card rounded-2xl p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 mb-4 border-b border-slate-700/70">
+          <div>
+            <h2 class="text-base sm:text-lg font-serif font-bold text-goldLight flex items-center gap-2">
+              <span>🎛️ 雙盤座標與九曜位置（已預填示範數據，修改任一格即時重算）</span>
+            </h2>
+            <p id="current-mode-desc" class="text-xs text-slate-400 mt-0.5">輸入本命與事件發生時刻的恆星制黃道位置，系統自動執行四步驟推演。</p>
+          </div>
+          <span id="current-mode-badge" class="text-xs font-medium px-3 py-1 rounded-full bg-gold/15 text-gold border border-gold/30 self-start sm:self-center">
+            模式一：上升命度軸
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <!-- 左側：本命盤核心座標 -->
+          <div class="lg:col-span-5 bg-nebula/85 rounded-xl p-4 border border-slate-700/80 space-y-3.5">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-amber-300">① 本命盤基準座標（體・主場）</span>
+              <span class="text-[11px] text-slate-400">決定 Star A</span>
+            </div>
+
+            <!-- 本命上升點 (Ascendant) -->
+            <div class="p-3 rounded-lg bg-void/70 border border-slate-700/80 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-amber-200">🧭 本命上升點（命度起點）</span>
+                <span id="natal-asc-nak-tag" class="text-[11px] text-gold">--</span>
+              </div>
+              <div class="grid grid-cols-12 gap-2">
+                <select id="natal-asc-sign" onchange="runCalculation()" class="col-span-6 bg-nebula border border-slate-600 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-gold focus:outline-none"></select>
+                <div class="col-span-3 flex items-center gap-1">
+                  <input type="number" id="natal-asc-deg" min="0" max="29" value="15" oninput="runCalculation()" class="w-full bg-nebula border border-slate-600 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-gold focus:outline-none" />
+                  <span class="text-[11px] text-slate-400">度</span>
+                </div>
+                <div class="col-span-3 flex items-center gap-1">
+                  <input type="number" id="natal-asc-min" min="0" max="59" value="20" oninput="runCalculation()" class="w-full bg-nebula border border-slate-600 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-gold focus:outline-none" />
+                  <span class="text-[11px] text-slate-400">分</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 本命月亮位置 (Natal Moon) -->
+            <div class="p-3 rounded-lg bg-void/70 border border-slate-700/80 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-purple-300">🌙 本命月亮位置（月宿大限起點）</span>
+                <span id="natal-moon-nak-tag" class="text-[11px] text-purple-300">--</span>
+              </div>
+              <div class="grid grid-cols-12 gap-2">
+                <select id="natal-moon-sign" onchange="runCalculation()" class="col-span-6 bg-nebula border border-slate-600 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-purple-400 focus:outline-none"></select>
+                <div class="col-span-3 flex items-center gap-1">
+                  <input type="number" id="natal-moon-deg" min="0" max="29" value="8" oninput="runCalculation()" class="w-full bg-nebula border border-slate-600 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-purple-400 focus:outline-none" />
+                  <span class="text-[11px] text-slate-400">度</span>
+                </div>
+                <div class="col-span-3 flex items-center gap-1">
+                  <input type="number" id="natal-moon-min" min="0" max="59" value="40" oninput="runCalculation()" class="w-full bg-nebula border border-slate-600 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-purple-400 focus:outline-none" />
+                  <span class="text-[11px] text-slate-400">分</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 年齡與推進速率 -->
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 pt-1">
+              <div class="sm:col-span-5">
+                <label class="block text-xs text-slate-300 mb-1">事件發生年齡（歲）</label>
+                <input type="number" id="event-age" step="0.1" min="0" max="120" value="34.0" oninput="runCalculation()" class="w-full bg-void border border-gold/50 rounded-lg px-3 py-2 text-sm font-bold text-goldLight focus:border-gold focus:outline-none" />
+              </div>
+              <div id="asc-rate-wrapper" class="sm:col-span-7">
+                <label class="block text-xs text-slate-300 mb-1">上升行限推進速率</label>
+                <select id="rate-mode" onchange="runCalculation()" class="w-full bg-void border border-slate-600 rounded-lg px-2.5 py-2 text-xs text-slate-100 focus:border-gold focus:outline-none">
+                  <option value="180">120年等比例制（3°00'/年，每宿4.44年）</option>
+                  <option value="200">108足週期制（3°20'/年，每足1年）</option>
+                  <option value="60">七政古法制（1°00'/年，每宿13.33年）</option>
+                </select>
+              </div>
+              <div id="moon-dasha-badge-box" class="hidden sm:col-span-7 flex flex-col justify-end">
+                <div class="bg-purple-950/40 border border-purple-500/35 rounded-lg px-3 py-2 text-[11px] text-purple-200 leading-snug">
+                  正統 Vimshottari 120年大限：依出生月宿比例扣除首限，精準推算當前大限與次限。
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 右側：流年事件盤上升點與九曜位置 -->
+          <div class="lg:col-span-7 bg-nebula/85 rounded-xl p-4 border border-slate-700/80 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-bold text-cyan-300">② 流年事件盤天象座標（用・客場）</span>
+              <span class="text-[11px] text-slate-400">決定 Star B、九曜宿主鏈與流年填實</span>
+            </div>
+
+            <!-- 事件上升點 (Event Ascendant) -->
+            <div id="event-asc-box" class="p-3 rounded-xl bg-cyan-950/30 border border-cyan-500/35 grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center">
+              <div class="sm:col-span-5">
+                <span class="text-xs font-bold text-cyan-300 block">🎯 事件上升點 (Event Asc)</span>
+                <span id="event-asc-nak-tag" class="text-[11px] text-cyan-200/80">決定模式一 Star B</span>
+              </div>
+              <div class="sm:col-span-3">
+                <select id="event-asc-sign" onchange="runCalculation()" class="w-full bg-void border border-cyan-600/50 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-cyan-400 focus:outline-none"></select>
+              </div>
+              <div class="sm:col-span-4 grid grid-cols-2 gap-1.5">
+                <div class="flex items-center gap-1">
+                  <input type="number" id="event-asc-deg" min="0" max="29" value="18" oninput="runCalculation()" class="w-full bg-void border border-cyan-600/50 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-cyan-400 focus:outline-none" />
+                  <span class="text-[11px] text-slate-400">度</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <input type="number" id="event-asc-min" min="0" max="59" value="0" oninput="runCalculation()" class="w-full bg-void border border-cyan-600/50 rounded-lg px-2 py-1.5 text-xs text-slate-100 focus:border-cyan-400 focus:outline-none" />
+                  <span class="text-[11px] text-slate-400">分</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 模式二專用提示條 -->
+            <div id="event-moon-banner" class="hidden p-2.5 rounded-xl bg-purple-950/40 border border-purple-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span class="text-xs text-purple-200">🌙 <strong>模式二已啟用：</strong>系統自動鎖定下方事件盤【月亮】所落星宿作為 <strong>Star B</strong>。</span>
+              <span id="event-moon-quick-badge" class="font-mono text-xs px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-200 border border-purple-400/30 shrink-0">--</span>
+            </div>
+
+            <!-- 九曜星曜列表輸入 -->
+            <div id="planets-input-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <!-- 由 JS 動態生成九曜輸入框 -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- 推演結果視覺化四步驟                         -->
+      <!-- ========================================== -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        
+        <!-- 步驟 1：雙軸主星鎖定（體與用） -->
+        <div class="glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-700/70 pb-3">
+            <h3 id="step1-title" class="text-base font-serif font-bold text-goldLight flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-gold text-void text-xs font-sans font-bold flex items-center justify-center">1</span>
+              雙軸主星鎖定（本命限度主 × 事件上升宿主）
+            </h3>
+            <span class="text-xs text-slate-400">體用定調</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <!-- 體：本命行限 / 本命月宿大限 -->
+            <div class="rounded-xl bg-void/85 border border-amber-500/35 p-3.5 space-y-2">
+              <div class="flex items-center justify-between">
+                <span id="res-natal-axis-label" class="text-xs font-bold text-amber-400">【體】本命行限游標</span>
+                <span id="res-natal-lon" class="font-mono text-xs text-slate-300">0°00'</span>
+              </div>
+              <div class="py-1">
+                <div id="res-natal-nak-caption" class="text-[11px] text-slate-400">所落 27 宿</div>
+                <div id="res-natal-nak" class="text-base font-bold text-white">--</div>
+                <div id="res-natal-subdasha" class="hidden text-[11px] text-purple-300 mt-0.5 font-medium">--</div>
+              </div>
+              <div class="flex items-center justify-between bg-amber-500/10 border border-amber-500/25 rounded-lg px-3 py-2">
+                <span id="res-star-a-label" class="text-xs text-amber-200">本命限度主 (Star A)</span>
+                <span id="res-star-a" class="text-base font-bold text-amber-300">--</span>
+              </div>
+              <div class="text-xs text-slate-300 pt-1.5 border-t border-slate-800 space-y-1">
+                <div>
+                  <span class="text-slate-400">27宿含義：</span>
+                  <span id="res-natal-meaning" class="text-goldLight font-medium">--</span>
+                </div>
+                <div>
+                  <span class="text-slate-400">身體部位：</span>
+                  <span id="res-natal-body" class="text-amber-200 font-medium">--</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 用：事件上升 / 事件月宿 -->
+            <div class="rounded-xl bg-void/85 border border-cyan-500/35 p-3.5 space-y-2">
+              <div class="flex items-center justify-between">
+                <span id="res-event-axis-label" class="text-xs font-bold text-cyan-400">【用】事件上升點</span>
+                <span id="res-event-lon" class="font-mono text-xs text-slate-300">0°00'</span>
+              </div>
+              <div class="py-1">
+                <div id="res-event-nak-caption" class="text-[11px] text-slate-400">所落 27 宿</div>
+                <div id="res-event-nak" class="text-base font-bold text-white">--</div>
+              </div>
+              <div class="flex items-center justify-between bg-cyan-500/10 border border-cyan-500/25 rounded-lg px-3 py-2">
+                <span id="res-star-b-label" class="text-xs text-cyan-200">事件上升宿主 (Star B)</span>
+                <span id="res-star-b" class="text-base font-bold text-cyan-300">--</span>
+              </div>
+              <div class="text-xs text-slate-300 pt-1.5 border-t border-slate-800 space-y-1">
+                <div>
+                  <span class="text-slate-400">27宿含義：</span>
+                  <span id="res-event-meaning" class="text-cyan-200 font-medium">--</span>
+                </div>
+                <div>
+                  <span class="text-slate-400">身體部位：</span>
+                  <span id="res-event-body" class="text-slate-200 font-medium">--</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 步驟 2：108 足微觀吉凶濾鏡 -->
+        <div class="glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-700/70 pb-3">
+            <h3 class="text-base font-serif font-bold text-goldLight flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-gold text-void text-xs font-sans font-bold flex items-center justify-center">2</span>
+              108 足微觀吉凶濾鏡（法・利・欲・解與 D9）
+            </h3>
+            <span class="text-xs text-slate-400">精準刻度</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <!-- 本命行限 / 本命月宿足位 -->
+            <div class="rounded-xl bg-void/85 border border-slate-700 p-3.5 space-y-2">
+              <div class="flex items-center justify-between">
+                <span id="res-natal-pada-title" class="text-xs font-bold text-amber-300">本命限度足位</span>
+                <span id="res-natal-pada-num" class="font-mono text-xs px-2 py-0.5 rounded bg-slate-800 text-goldLight">第 -- 足</span>
+              </div>
+              <div id="res-natal-purushartha" class="text-sm font-semibold text-white">--</div>
+              <div id="res-natal-d9" class="text-xs text-slate-300">九分盤 D9：--</div>
+              <div id="res-natal-pada-badges" class="flex flex-wrap gap-1.5 pt-1"></div>
+            </div>
+
+            <!-- 事件上升 / 事件月宿足位 -->
+            <div class="rounded-xl bg-void/85 border border-slate-700 p-3.5 space-y-2">
+              <div class="flex items-center justify-between">
+                <span id="res-event-pada-title" class="text-xs font-bold text-cyan-300">事件上升足位</span>
+                <span id="res-event-pada-num" class="font-mono text-xs px-2 py-0.5 rounded bg-slate-800 text-cyan-300">第 -- 足</span>
+              </div>
+              <div id="res-event-purushartha" class="text-sm font-semibold text-white">--</div>
+              <div id="res-event-d9" class="text-xs text-slate-300">九分盤 D9：--</div>
+              <div id="res-event-pada-badges" class="flex flex-wrap gap-1.5 pt-1"></div>
+            </div>
+          </div>
+
+          <!-- Star A & Star B 在事件盤中的 D9 廟旺落陷 -->
+          <div id="res-lords-d9-status" class="rounded-xl bg-nebula/90 border border-slate-700/80 p-3 text-xs text-slate-300 space-y-1.5">
+            <!-- 動態填入 Star A / Star B 實質強弱 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 步驟 3：九曜宿主定位鏈（27宿星鏈視覺化） -->
+      <div class="glass-card rounded-2xl p-5 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-700/70 pb-3 gap-2">
+          <h3 class="text-base font-serif font-bold text-goldLight flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-gold text-void text-xs font-sans font-bold flex items-center justify-center">3</span>
+            九曜宿主定位鏈（27宿因果星鏈推演）
+          </h3>
+          <div id="res-chain-convergence" class="text-xs font-medium px-3 py-1 rounded-full bg-slate-800 border border-slate-600 text-slate-300">
+            匯聚狀態分析中...
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Star A 鏈 -->
+          <div class="rounded-xl bg-void/85 border border-amber-500/25 p-4">
+            <div class="text-xs font-bold text-amber-400 mb-2.5 flex items-center justify-between">
+              <span>【體鏈】本命限度／大限主 (Star A) 氣數流向：</span>
+              <span id="chain-a-summary" class="font-normal text-slate-400"></span>
+            </div>
+            <div id="chain-a-nodes" class="flex flex-wrap items-center gap-2"></div>
+          </div>
+
+          <!-- Star B 鏈 -->
+          <div class="rounded-xl bg-void/85 border border-cyan-500/25 p-4">
+            <div class="text-xs font-bold text-cyan-400 mb-2.5 flex items-center justify-between">
+              <span>【用鏈】事件上升／月宿主 (Star B) 氣數流向：</span>
+              <span id="chain-b-summary" class="font-normal text-slate-400"></span>
+            </div>
+            <div id="chain-b-nodes" class="flex flex-wrap items-center gap-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 步驟 4：綜合斷事與應期總結報告 -->
+      <div class="glass-card rounded-2xl p-5 space-y-4 border-gold/40">
+        <div class="flex items-center justify-between border-b border-slate-700/70 pb-3">
+          <h3 class="text-base sm:text-lg font-serif font-bold text-goldLight flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-gold text-void text-xs font-sans font-bold flex items-center justify-center">4</span>
+            綜合斷事結論、流年填實與應期報告
+          </h3>
+          <span id="res-overall-verdict-badge" class="px-3 py-1 rounded-lg text-xs font-bold bg-gold/20 text-goldLight border border-gold/40">
+            綜合評估
+          </span>
+        </div>
+
+        <div id="res-final-report" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
+          <!-- 動態生成三欄結構化報告 -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 分頁二：27宿、九曜、含義、身體部位與108足速查表 -->
+    <!-- ========================================== -->
+    <section id="view-ref" class="hidden space-y-5">
+      <div class="glass-card rounded-2xl p-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-700/70">
+          <div>
+            <h2 class="text-lg font-serif font-bold text-goldLight">📜 27宿恆星制・九曜度主・核心含義・身體部位與108足完整對照表</h2>
+            <p class="text-xs text-slate-400 mt-0.5">每宿固定寬度 13°20'（800角分），內含 4 足（每足 3°20'）。點擊任意星宿可展開 4 足 D9 星座明細。</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="nak-search" oninput="renderReferenceTable()" placeholder="搜尋宿名、九曜、含義、星座或身體部位..." class="bg-void border border-slate-600 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-100 w-full md:w-72 focus:border-gold focus:outline-none" />
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-gold/30 text-goldLight bg-void/70">
+                <th class="py-3 px-3">序</th>
+                <th class="py-3 px-3">27宿（漢譯 / 梵音）</th>
+                <th class="py-3 px-3">恆星黃道區間</th>
+                <th class="py-3 px-3">九曜度主</th>
+                <th class="py-3 px-3">27宿核心含義與事件應象</th>
+                <th class="py-3 px-3">對應身體部位（疾厄應象）</th>
+                <th class="py-3 px-3 text-right">108足明細</th>
+              </tr>
+            </thead>
+            <tbody id="nak-ref-tbody" class="divide-y divide-slate-800">
+              <!-- 由 JS 動態生成 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 分頁三：標準推演流程 SOP 指南                -->
+    <!-- ========================================== -->
+    <section id="view-sop" class="hidden space-y-6">
+      <div class="glass-card rounded-2xl p-6">
+        <h2 class="text-xl font-serif font-bold text-goldLight mb-2">🧭 27宿恆星制雙盤事件推演標準流程（SOP 心法）</h2>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
+          本系統融合漢傳七政四餘「本命行限對照流年天象」的體用思維，與印度恆星制 27 宿「等距 $13^\circ 20'$ 切分、九曜收斂、108 足 D9 驗證」的精密數理。實戰斷事依循以下五階段逐步收斂：
+        </p>
+
+        <div class="space-y-4">
+          <div class="p-4 rounded-xl bg-void/80 border-l-4 border-amber-400 space-y-1.5">
+            <div class="text-sm font-bold text-amber-300">階段一：定體用雙座標（支援「上升命度軸」與「月宿大限軸」）</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              • <strong>模式一（上升命度軸）：</strong>從本命恆星上升點出發，依選定速率推進至事件發生歲數得出限度主 <strong>Star A</strong>；取事件發生瞬間的恆星上升點所落星宿度主為 <strong>Star B</strong>（適合精確時分卜卦與擇時）。<br/>
+              • <strong>模式二（月宿大限軸）：</strong>依出生月亮在出生月宿已走過比例扣除首限剩餘年數，按印度正統 Vimshottari 120 年九曜大限序列推出當下大限主 <strong>Star A</strong>（並同步參考次限主 Antardasha）；取流年事件盤月亮所落星宿度主為 <strong>Star B</strong>（適合不確定精確出生分秒或看心境境遇顯化）。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-void/80 border-l-4 border-cyan-400 space-y-1.5">
+            <div class="text-sm font-bold text-cyan-300">階段二：108 足微觀過濾（四目標定性與危足一票否決）</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              1. <strong>四足領域（1～4 足）：</strong> 第 1 足「法 Dharma」利名分開創；第 2 足「利 Artha」求財獲利最吉；第 3 足「欲 Kama」重人際溝通但多變數；第 4 足「解脫 Moksha」主收尾內收，開創求財極易無疾而終。<br/>
+              2. <strong>水火危足（Gandanta，共 6 足）：</strong> 巨蟹末、獅子初、天蠍末、射手初、雙魚末、白羊初。事件上升點或事件月亮踩入危足，主發動即遇劇烈動盪、情緒衝擊或根基斷裂。<br/>
+              3. <strong>滋養吉足（Pushkara，共 24 足）與同宮強勢足（Vargottama）：</strong> 踩入吉足具備逢凶化吉、貴人托底之力；大盤與 D9 同星座（Vargottama）代表根基極穩。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-void/80 border-l-4 border-emerald-400 space-y-1.5">
+            <div class="text-sm font-bold text-emerald-300">階段三：展開九曜宿主定位鏈（最多 9 步必收斂）</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              分別從 <strong>Star A</strong> 與 <strong>Star B</strong> 出發，查看該星在事件天象盤中落入哪一宿，再找該宿之主，一路追蹤下去：<br/>
+              • <strong>自坐本宿（Final Dispositor）：</strong> 星曜落入自己掌管的星宿，鏈條至此落地，該星即為事件的「最終拍板者與實質結局」。<br/>
+              • <strong>形成閉環（Mutual Loop）：</strong> 幾顆星互相落入對方星宿形成循環，代表事件在這幾股力量間反覆拉扯、必須妥協或長期消耗。<br/>
+              • <strong>雙鏈匯聚：</strong> 若 Star A 與 Star B 兩條鏈最後停在同一顆星，代表本命大運與當下事件氣場共振，事情必然發生。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-void/80 border-l-4 border-purple-400 space-y-1.5">
+            <div class="text-sm font-bold text-purple-300">階段四：檢驗流年填實與 D9 實質強弱</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              1. <strong>流年填實（Transit Hit）：</strong> 檢查事件盤中的九曜（尤其是火、土、羅、計煞星或木、金吉星）是否剛好飛入「本命行限／大限映射游標」所在的同一個 27 宿內。一旦填實，即為事件爆發的精準引爆點。<br/>
+              2. <strong>D9 廟旺落陷：</strong> 檢查 Star A 與 Star B 在事件盤當下所落的足位（即九分盤星座）。表面是吉星（如木星）但落 D9 摩羯落陷，為「外強中乾、先吉後凶」；表面是凶星（如土星）但落 D9 天秤廟旺，為「先難後成、苦盡甘來」。
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-void/80 border-l-4 border-rose-400 space-y-1.5">
+            <div class="text-sm font-bold text-rose-300">階段五：27宿含義定性與身體部位應象</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              1. <strong>27宿含義定性：</strong>每宿皆有其神話與占星原型的核心象意（如婁宿代表神速療癒啟動、鬼宿代表滋養穩固、尾宿代表深挖根源、危宿代表百藥療癒與隱秘），結合 Star A 與 Star B 的宿義即可直斷事件性質。<br/>
+              2. <strong>身體部位應象：</strong>若占問健康疾厄或遭遇危足、煞星填實限度時，直接比對「本命限度／月宿」與「事件上升／月宿」對應的傳統身體部位。受火羅衝剋多主急性發炎、外傷手術；受土計衝剋多主慢性瘀阻、寒濕或神經退化。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 108足明細彈窗 Modal -->
+  <div id="pada-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-2xl w-full p-5 sm:p-6 border border-gold/50 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+        <h3 id="modal-title" class="text-lg font-serif font-bold text-goldLight">星宿 4 足明細</h3>
+        <button onclick="closePadaModal()" class="text-slate-400 hover:text-white text-xl leading-none px-2 cursor-pointer">&times;</button>
+      </div>
+      <div id="modal-content" class="space-y-3 text-xs sm:text-sm"></div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. 核心天文與 27 宿資料庫 (完整精確定義)
+    // =========================================================================
+    const SIGNS = [
+      { name: "白羊座", lord: "火星", element: 0 }, // 0:火
+      { name: "金牛座", lord: "金星", element: 1 }, // 1:地
+      { name: "雙子座", lord: "水星", element: 2 }, // 2:風
+      { name: "巨蟹座", lord: "月亮", element: 3 }, // 3:水
+      { name: "獅子座", lord: "太陽", element: 0 },
+      { name: "處女座", lord: "水星", element: 1 },
+      { name: "天秤座", lord: "金星", element: 2 },
+      { name: "天蠍座", lord: "火星", element: 3 },
+      { name: "射手座", lord: "木星", element: 0 },
+      { name: "摩羯座", lord: "土星", element: 1 },
+      { name: "水瓶座", lord: "土星", element: 2 },
+      { name: "雙魚座", lord: "木星", element: 3 }
+    ];
+
+    const NAK_LORDS = ["計都", "金星", "太陽", "月亮", "火星", "羅睺", "木星", "土星", "水星"];
+
+    // Vimshottari 120年大限固定年數表
+    const VIMSHOTTARI_YEARS = {
+      "計都": 7,
+      "金星": 20,
+      "太陽": 6,
+      "月亮": 10,
+      "火星": 7,
+      "羅睺": 18,
+      "木星": 16,
+      "土星": 19,
+      "水星": 17
+    };
+
+    const PLANET_NATURE = {
+      "木星": { type: "吉星", color: "text-emerald-400", badge: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40" },
+      "金星": { type: "吉星", color: "text-emerald-300", badge: "bg-emerald-500/20 text-emerald-200 border-emerald-500/40" },
+      "月亮": { type: "中性偏吉", color: "text-cyan-300", badge: "bg-cyan-500/20 text-cyan-200 border-cyan-500/40" },
+      "水星": { type: "中性百變", color: "text-sky-300", badge: "bg-sky-500/20 text-sky-200 border-sky-500/40" },
+      "太陽": { type: "中性威權", color: "text-amber-300", badge: "bg-amber-500/20 text-amber-200 border-amber-500/40" },
+      "火星": { type: "煞星", color: "text-rose-400", badge: "bg-rose-500/20 text-rose-300 border-rose-500/40" },
+      "土星": { type: "煞星", color: "text-indigo-300", badge: "bg-indigo-500/20 text-indigo-300 border-indigo-500/40" },
+      "羅睺": { type: "凶煞", color: "text-purple-400", badge: "bg-purple-500/20 text-purple-300 border-purple-500/40" },
+      "計都": { type: "凶煞", color: "text-orange-400", badge: "bg-orange-500/20 text-orange-300 border-orange-500/40" }
+    };
+
+    // D9 廟旺落陷對照表 (0:白羊 ... 11:雙魚)
+    const DIGNITY_RULES = {
+      "太陽": { exalt: [0], own: [4], debil: [6] },
+      "月亮": { exalt: [1], own: [3], debil: [7] },
+      "火星": { exalt: [9], own: [0, 7], debil: [3] },
+      "水星": { exalt: [5], own: [2, 5], debil: [11] },
+      "木星": { exalt: [3], own: [8, 11], debil: [9] },
+      "金星": { exalt: [11], own: [1, 6], debil: [5] },
+      "土星": { exalt: [6], own: [9, 10], debil: [0] },
+      "羅睺": { exalt: [1, 2], own: [10], debil: [7, 8] },
+      "計都": { exalt: [7, 8], own: [7], debil: [1, 2] }
+    };
+
+    // 完整 27 宿資料庫（含漢譯、梵音、度主、星宿性質、核心含義、傳統身體部位）
+    const NAKSHATRAS = [
+      { idx: 0,  cn: "婁宿", sanskrit: "Ashwini", lord: "計都", nature: "急速輕快 (Kshipra)", meaning: "神速啟動、療癒修復、開創先鋒、行動果決、交通出行", body: "雙足背、膝蓋、頭部頂端" },
+      { idx: 1,  cn: "胃宿", sanskrit: "Bharani", lord: "金星", nature: "猛烈嚴酷 (Ugra)", meaning: "孕育承載、生死轉化、欲望考驗、破舊立新、紀律約束", body: "頭部、額頭、眼眶、生殖器官" },
+      { idx: 2,  cn: "昴宿", sanskrit: "Krittika", lord: "太陽", nature: "剛柔並濟 (Mishra)", meaning: "烈火淨化、鋒利切割、權威名聲、剔除雜質、果斷決策", body: "雙眼、眉心、頭頂、腰部" },
+      { idx: 3,  cn: "畢宿", sanskrit: "Rohini", lord: "月亮", nature: "固定穩固 (Dhruva)", meaning: "滋養生長、財富豐饒、魅力吸引、藝術創造、物質落實", body: "前額、臉頰、小腿、腳踝" },
+      { idx: 4,  cn: "觜宿", sanskrit: "Mrigashira", lord: "火星", nature: "溫和柔順 (Mridu)", meaning: "好奇探索、尋覓求知、靈活變通、溫和試探、易生猶豫", body: "眉毛、雙眼、頸部、喉嚨" },
+      { idx: 5,  cn: "參宿", sanskrit: "Ardra", lord: "羅睺", nature: "尖銳恐懼 (Tikshna)", meaning: "風暴摧毀、淚水洗滌、劇烈變革、突破執念、雨過天晴", body: "後腦勺、頭髮、神經系統、雙臂" },
+      { idx: 6,  cn: "井宿", sanskrit: "Punarvasu", lord: "木星", nature: "流動變通 (Chara)", meaning: "失而復得、重啟回歸、包容庇護、資源再生、善良仁慈", body: "鼻子、手指、胸腔、肺部" },
+      { idx: 7,  cn: "鬼宿", sanskrit: "Pushya", lord: "土星", nature: "急速輕快 (Kshipra)", meaning: "滋養培育、穩固根基、傳統倫理、無私奉獻、大吉大利", body: "口唇、臉部、胃部、乳房" },
+      { idx: 8,  cn: "柳宿", sanskrit: "Ashlesha", lord: "水星", nature: "尖銳恐懼 (Tikshna)", meaning: "靈蛇纏繞、深層洞察、心理博弈、防範毒害、暗中掌控", body: "耳朵、指甲、關節、肝膽腸胃" },
+      { idx: 9,  cn: "星宿", sanskrit: "Magha", lord: "計都", nature: "猛烈嚴酷 (Ugra)", meaning: "皇室威儀、祖蔭傳承、尊嚴榮耀、領導統御、家族根源", body: "鼻子、嘴唇、下巴、心臟與背部" },
+      { idx: 10, cn: "張宿", sanskrit: "Purva Phalguni", lord: "金星", nature: "猛烈嚴酷 (Ugra)", meaning: "享樂休憩、婚姻魅力、創意展現、社交歡愉、鬆弛有度", body: "右手、生殖泌尿系統、心臟" },
+      { idx: 11, cn: "翼宿", sanskrit: "Uttara Phalguni", lord: "太陽", nature: "固定穩固 (Dhruva)", meaning: "契約結盟、責任承諾、貴人提携、長久合作、公益秩序", body: "左手、腰椎、腸道、皮膚" },
+      { idx: 12, cn: "軫宿", sanskrit: "Hasta", lord: "月亮", nature: "急速輕快 (Kshipra)", meaning: "巧手技藝、精準掌控、務實執行、機智幽默、掌握主導權", body: "雙手掌、手指、內分泌與消化道" },
+      { idx: 13, cn: "角宿", sanskrit: "Chitra", lord: "火星", nature: "溫和柔順 (Mridu)", meaning: "精雕細琢、建築美學、耀眼奪目、設計規劃、追求完美", body: "頸部、額頭、腎臟、下腹部" },
+      { idx: 14, cn: "亢宿", sanskrit: "Swati", lord: "羅睺", nature: "流動變通 (Chara)", meaning: "隨風獨立、靈活商貿、自主創業、散播擴張、不受拘束", body: "胸部、牙齒、皮膚、泌尿道" },
+      { idx: 15, cn: "氐宿", sanskrit: "Vishakha", lord: "木星", nature: "剛柔並濟 (Mishra)", meaning: "目標鎖定、野心突破、專注執著、競爭奪標、分岔抉擇", body: "雙臂、胸部、下腹、膀胱" },
+      { idx: 16, cn: "房宿", sanskrit: "Anuradha", lord: "土星", nature: "溫和柔順 (Mridu)", meaning: "忠誠友誼、團隊凝聚、跨界合作、逆境韌性、深情奉獻", body: "胃部、胸部、子宮/前列腺、直腸" },
+      { idx: 17, cn: "心宿", sanskrit: "Jyeshtha", lord: "水星", nature: "尖銳恐懼 (Tikshna)", meaning: "資深權威、保護弱小、危機處理、掌控全局、孤高壓力", body: "頸部、舌頭、右側軀幹、生殖器" },
+      { idx: 18, cn: "尾宿", sanskrit: "Mula", lord: "計都", nature: "尖銳恐懼 (Tikshna)", meaning: "連根拔起、探究真相、破除幻象、直擊核心、徹底翻轉", body: "雙腳底、腳跟、坐骨神經、臀部" },
+      { idx: 19, cn: "箕宿", sanskrit: "Purva Ashadha", lord: "金星", nature: "猛烈嚴酷 (Ugra)", meaning: "所向披靡、早期勝利、淨化革新、信念鼓舞、辯才無礙", body: "大腿、臀部、腰部、血液循環" },
+      { idx: 20, cn: "斗宿", sanskrit: "Uttara Ashadha", lord: "太陽", nature: "固定穩固 (Dhruva)", meaning: "終極勝利、永恆成就、正大光明、使命必達、晚成穩固", body: "大腿、膝蓋、腰部、骨骼" },
+      { idx: 21, cn: "女宿", sanskrit: "Shravana", lord: "月亮", nature: "流動變通 (Chara)", meaning: "傾聽學習、訊息傳遞、連結人脈、口碑傳播、智慧沉澱", body: "雙耳、膝蓋、淋巴系統、皮膚" },
+      { idx: 22, cn: "虛宿", sanskrit: "Dhanishta", lord: "火星", nature: "流動變通 (Chara)", meaning: "名利豐收、節奏韻律、團體榮耀、資源整合、行動高調", body: "背部、膝蓋、腳踝、心血管" },
+      { idx: 23, cn: "危宿", sanskrit: "Shatabhisha", lord: "羅睺", nature: "流動變通 (Chara)", meaning: "百藥療癒、隱秘洞察、獨立孤行、突破常規、解開謎團", body: "下顎、右小腿、小腿肚、循環系統" },
+      { idx: 24, cn: "室宿", sanskrit: "Purva Bhadrapada", lord: "木星", nature: "猛烈嚴酷 (Ugra)", meaning: "雙面轉化、熱情覺醒、犧牲奉獻、激烈改革、思想先驅", body: "左小腿、肋骨、兩側脅部、腳踝" },
+      { idx: 25, cn: "壁宿", sanskrit: "Uttara Bhadrapada", lord: "土星", nature: "固定穩固 (Dhruva)", meaning: "深海沉澱、慈悲智慧、幕後支撐、忍辱負重、穩定收官", body: "雙小腿、腳底、肋骨、免疫系統" },
+      { idx: 26, cn: "奎宿", sanskrit: "Revati", lord: "水星", nature: "溫和柔順 (Mridu)", meaning: "圓滿護送、滋養旅途、繁榮富足、善終交接、柔和包容", body: "雙腳掌、腳趾、腹部、淋巴腺" }
+    ];
+
+    const NINE_PLANETS = ["太陽", "月亮", "火星", "水星", "木星", "金星", "土星", "羅睺", "計都"];
+
+    // 當前推演模式：'asc' (模式一：上升命度軸) | 'moon' (模式二：月宿 Vimshottari 大限軸)
+    let calcMode = "asc";
+
+    // 預填九曜初始經度（保證一打開就有完整可運作數據）
+    let planetDegrees = {
+      "太陽": 42.5,   // 金牛 12°30'
+      "月亮": 195.0,  // 天秤 15°00'
+      "火星": 280.0,  // 摩羯 10°00'
+      "水星": 85.0,   // 雙子 25°00'
+      "木星": 84.0,   // 雙子 24°00' (井宿，木星自坐本宿)
+      "金星": 46.5,   // 金牛 16°30'
+      "土星": 325.0,  // 水瓶 25°00'
+      "羅睺": 82.0,   // 雙子 22°00'
+      "計都": 262.0   // 射手 22°00'
+    };
+
+    // =========================================================================
+    // 2. 初始化介面與預填資料
+    // =========================================================================
+    function initApp() {
+      // 填充所有星座下拉選單
+      const signSelectIds = ["natal-asc-sign", "natal-moon-sign", "event-asc-sign"];
+      signSelectIds.forEach(id => {
+        const sel = document.getElementById(id);
+        SIGNS.forEach((s, idx) => {
+          const opt = document.createElement("option");
+          opt.value = idx;
+          opt.textContent = `${s.name} (${s.lord}宮)`;
+          sel.appendChild(opt);
+        });
+      });
+
+      // 動態生成九曜輸入框並預填數據
+      const grid = document.getElementById("planets-input-grid");
+      NINE_PLANETS.forEach((p, i) => {
+        const initLon = planetDegrees[p];
+        const sIdx = Math.floor(initLon / 30);
+        const degInSign = Math.floor(initLon % 30);
+        const minInSign = Math.round(((initLon % 30) - degInSign) * 60);
+
+        const div = document.createElement("div");
+        div.className = "bg-void/90 border border-slate-700/90 rounded-lg p-2 flex flex-col gap-1.5";
+        div.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold ${PLANET_NATURE[p].color}">${p}</span>
+            <span id="p-nak-preview-${i}" class="text-[10px] text-slate-400">--</span>
+          </div>
+          <div class="grid grid-cols-12 gap-1">
+            <select id="p-sign-${i}" onchange="updatePlanetFromUI(${i})" class="col-span-6 bg-nebula border border-slate-600 rounded px-1.5 py-1 text-[11px] text-slate-200 focus:border-gold focus:outline-none">
+              ${SIGNS.map((s, idx) => `<option value="${idx}" ${idx === sIdx ? 'selected' : ''}>${s.name}</option>`).join('')}
+            </select>
+            <input type="number" id="p-deg-${i}" min="0" max="29" value="${degInSign}" oninput="updatePlanetFromUI(${i})" class="col-span-3 bg-nebula border border-slate-600 rounded px-1.5 py-1 text-[11px] text-slate-200 focus:border-gold focus:outline-none" />
+            <input type="number" id="p-min-${i}" min="0" max="59" value="${minInSign}" oninput="updatePlanetFromUI(${i})" class="col-span-3 bg-nebula border border-slate-600 rounded px-1.5 py-1 text-[11px] text-slate-200 focus:border-gold focus:outline-none" />
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+
+      renderReferenceTable();
+      // 啟動即載入範例一並立即運算，確保使用者打開頁面就看到完整結果
+      loadPresetCase(1);
+    }
+
+    function setCalcMode(mode) {
+      calcMode = mode;
+      const btnAsc = document.getElementById("mode-btn-asc");
+      const btnMoon = document.getElementById("mode-btn-moon");
+
+      if (mode === "asc") {
+        btnAsc.className = "px-4 py-2.5 rounded-xl border text-left transition-all cursor-pointer bg-gold/20 border-gold text-goldLight shadow-md shadow-gold/10";
+        btnMoon.className = "px-4 py-2.5 rounded-xl border text-left transition-all cursor-pointer bg-nebula/80 border-slate-700 text-slate-300 hover:border-purple-400/50";
+
+        document.getElementById("current-mode-badge").textContent = "模式一：上升命度軸";
+        document.getElementById("current-mode-badge").className = "text-xs font-medium px-3 py-1 rounded-full bg-gold/15 text-gold border border-gold/30";
+        document.getElementById("current-mode-desc").textContent = "以【本命上升點】隨年齡推進定本命限度主（Star A），以【事件上升點】定事件上升宿主（Star B）。";
+
+        document.getElementById("asc-rate-wrapper").classList.remove("hidden");
+        document.getElementById("moon-dasha-badge-box").classList.add("hidden");
+        document.getElementById("event-asc-box").classList.remove("hidden");
+        document.getElementById("event-moon-banner").classList.add("hidden");
+
+        document.getElementById("step1-title").innerHTML = `<span class="w-6 h-6 rounded-full bg-gold text-void text-xs font-sans font-bold flex items-center justify-center">1</span> 雙軸主星鎖定（本命限度主 × 事件上升宿主）`;
+        document.getElementById("res-natal-axis-label").textContent = "【體】本命行限游標";
+        document.getElementById("res-natal-nak-caption").textContent = "行限所落 27 宿";
+        document.getElementById("res-star-a-label").textContent = "本命限度主 (Star A)";
+        document.getElementById("res-natal-subdasha").classList.add("hidden");
+
+        document.getElementById("res-event-axis-label").textContent = "【用】事件上升點";
+        document.getElementById("res-event-nak-caption").textContent = "事件上升所落 27 宿";
+        document.getElementById("res-star-b-label").textContent = "事件上升宿主 (Star B)";
+
+        document.getElementById("res-natal-pada-title").textContent = "本命限度足位";
+        document.getElementById("res-event-pada-title").textContent = "事件上升足位";
+      } else {
+        btnMoon.className = "px-4 py-2.5 rounded-xl border text-left transition-all cursor-pointer bg-purple-500/20 border-purple-400 text-purple-200 shadow-md shadow-purple-500/15";
+        btnAsc.className = "px-4 py-2.5 rounded-xl border text-left transition-all cursor-pointer bg-nebula/80 border-slate-700 text-slate-300 hover:border-gold/50";
+
+        document.getElementById("current-mode-badge").textContent = "模式二：月宿 Vimshottari 大限軸";
+        document.getElementById("current-mode-badge").className = "text-xs font-medium px-3 py-1 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/40";
+        document.getElementById("current-mode-desc").textContent = "以【本命月亮】依印度正統 120 年大限推出當前大限主（Star A），以【事件盤月亮】定流年事件月宿主（Star B）。";
+
+        document.getElementById("asc-rate-wrapper").classList.add("hidden");
+        document.getElementById("moon-dasha-badge-box").classList.remove("hidden");
+        document.getElementById("event-asc-box").classList.add("hidden");
+        document.getElementById("event-moon-banner").classList.remove("hidden");
+
+        document.getElementById("step1-title").innerHTML = `<span class="w-6 h-6 rounded-full bg-gold text-void text-xs font-sans font-bold flex items-center justify-center">1</span> 雙軸主星鎖定（本命月宿大限主 × 事件月宿主）`;
+        document.getElementById("res-natal-axis-label").textContent = "【體】本命大限映射游標";
+        document.getElementById("res-natal-nak-caption").textContent = "出生月宿 ➔ 當下大限映射宿";
+        document.getElementById("res-star-a-label").textContent = "本命大限主 (Star A)";
+        document.getElementById("res-natal-subdasha").classList.remove("hidden");
+
+        document.getElementById("res-event-axis-label").textContent = "【用】流年事件月亮";
+        document.getElementById("res-event-nak-caption").textContent = "事件月亮所落 27 宿";
+        document.getElementById("res-star-b-label").textContent = "事件月宿主 (Star B)";
+
+        document.getElementById("res-natal-pada-title").textContent = "本命出生月宿足位";
+        document.getElementById("res-event-pada-title").textContent = "事件月宿足位";
+      }
+
+      runCalculation();
+    }
+
+    function updatePlanetFromUI(idx) {
+      const pName = NINE_PLANETS[idx];
+      const s = parseInt(document.getElementById(`p-sign-${idx}`).value) || 0;
+      const d = Math.min(29, Math.max(0, parseInt(document.getElementById(`p-deg-${idx}`).value) || 0));
+      const m = Math.min(59, Math.max(0, parseInt(document.getElementById(`p-min-${idx}`).value) || 0));
+      planetDegrees[pName] = s * 30 + d + m / 60.0;
+      runCalculation();
+    }
+
+    function getLonFromControls(prefix) {
+      const s = parseInt(document.getElementById(`${prefix}-sign`).value) || 0;
+      const d = Math.min(29, Math.max(0, parseInt(document.getElementById(`${prefix}-deg`).value) || 0));
+      const m = Math.min(59, Math.max(0, parseInt(document.getElementById(`${prefix}-min`).value) || 0));
+      return (s * 30 + d + m / 60.0) % 360;
+    }
+
+    function setControlsFromLon(prefix, lon) {
+      const norm = ((lon % 360) + 360) % 360;
+      const s = Math.floor(norm / 30);
+      const rem = norm % 30;
+      const d = Math.floor(rem);
+      const m = Math.round((rem - d) * 60) % 60;
+      document.getElementById(`${prefix}-sign`).value = s;
+      document.getElementById(`${prefix}-deg`).value = d;
+      document.getElementById(`${prefix}-min`).value = m;
+    }
+
+    function setAllPlanetsUI(degMap) {
+      NINE_PLANETS.forEach((p, idx) => {
+        const norm = ((degMap[p] % 360) + 360) % 360;
+        planetDegrees[p] = norm;
+        const s = Math.floor(norm / 30);
+        const rem = norm % 30;
+        const d = Math.floor(rem);
+        const m = Math.round((rem - d) * 60) % 60;
+        document.getElementById(`p-sign-${idx}`).value = s;
+        document.getElementById(`p-deg-${idx}`).value = d;
+        document.getElementById(`p-min-${idx}`).value = m;
+      });
+    }
+
+    // =========================================================================
+    // 3. 預設案例與隨機天象生成
+    // =========================================================================
+    function loadPresetCase(caseId) {
+      if (caseId === 1) {
+        // 範例一：商業簽約吉局（雙鏈匯聚木星、第2足利足、Pushkara吉足）
+        document.getElementById("rate-mode").value = "180";
+        setControlsFromLon("natal-asc", 15.3333);  // 白羊 15°20' (胃宿)
+        setControlsFromLon("natal-moon", 43.3333); // 金牛 13°20' (畢宿)
+        document.getElementById("event-age").value = "34.0";
+        setControlsFromLon("event-asc", 48.0);     // 金牛 18°00' (畢宿第3足，Pushkara吉足，月度)
+        setAllPlanetsUI({
+          "太陽": 35.0,
+          "月亮": 195.0, // 亢宿(羅睺度)
+          "火星": 280.0,
+          "水星": 85.0,  // 井宿(木星度)
+          "木星": 84.0,  // 井宿(木星自坐本宿！)
+          "金星": 46.5,
+          "土星": 325.0,
+          "羅睺": 82.0,  // 井宿(木星度)
+          "計都": 262.0
+        });
+        setCalcMode("asc");
+      } else if (caseId === 2) {
+        // 範例二：水火危足破局（事件上升踩 Gandanta 危足、第4足解脫足、流年火土填實）
+        document.getElementById("rate-mode").value = "180";
+        setControlsFromLon("natal-asc", 10.0);     // 白羊 10°00' (婁宿)
+        setControlsFromLon("natal-moon", 215.0);   // 天蠍 5°00' (房宿)
+        document.getElementById("event-age").value = "28.5"; // 10 + 85.5 = 95.5° (巨蟹5°30' 鬼宿)
+        setControlsFromLon("event-asc", 118.5);    // 巨蟹 28°30' (柳宿第4足 -> Gandanta水火危足！)
+        setAllPlanetsUI({
+          "太陽": 145.0,
+          "月亮": 220.0,
+          "火星": 96.0,  // 鬼宿(填實本命限度！)
+          "水星": 295.0, // 虛宿(火星)
+          "木星": 275.0, // 斗宿(D9摩羯落陷)
+          "金星": 160.0,
+          "土星": 98.0,  // 鬼宿(土星自坐本宿且填實限度！)
+          "羅睺": 25.0,
+          "計都": 205.0
+        });
+        setCalcMode("asc");
+      } else if (caseId === 3) {
+        // 範例三：月宿 Vimshottari 大限應期（雙月宿交會模式）
+        setControlsFromLon("natal-asc", 125.0);
+        setControlsFromLon("natal-moon", 44.0);    // 金牛 14°00' (畢宿 Rohini，月度)
+        document.getElementById("event-age").value = "32.5"; // 推出進入木星大限 (Star A = 木星)
+        setControlsFromLon("event-asc", 210.0);
+        setAllPlanetsUI({
+          "太陽": 152.0,
+          "月亮": 202.0, // 天秤 22°00' (氐宿 Vishakha 第1足，木星度，且木星自坐本宿！)
+          "火星": 65.0,
+          "水星": 140.0,
+          "木星": 205.0, // 天秤 25°00' (氐宿，木星自坐本宿！)
+          "金星": 175.0,
+          "土星": 310.0,
+          "羅睺": 340.0,
+          "計都": 160.0
+        });
+        setCalcMode("moon");
+      }
+    }
+
+    function randomizeEventChart() {
+      const randLon = () => Math.random() * 360;
+      setControlsFromLon("event-asc", randLon());
+      const rahu = randLon();
+      setAllPlanetsUI({
+        "太陽": randLon(),
+        "月亮": randLon(),
+        "火星": randLon(),
+        "水星": randLon(),
+        "木星": randLon(),
+        "金星": randLon(),
+        "土星": randLon(),
+        "羅睺": rahu,
+        "計都": (rahu + 180) % 360
+      });
+      runCalculation();
+    }
+
+    // =========================================================================
+    // 4. 核心占星演算法（27宿、108足、D9、宿主定位鏈、Vimshottari）
+    // =========================================================================
+    function formatLon(lon) {
+      const norm = ((lon % 360) + 360) % 360;
+      const sIdx = Math.floor(norm / 30);
+      const rem = norm % 30;
+      const d = Math.floor(rem);
+      const m = Math.floor((rem - d) * 60);
+      return `${SIGNS[sIdx].name} ${d}°${String(m).padStart(2, '0')}'`;
+    }
+
+    function analyzePoint(lon, planetName = null) {
+      const norm = ((lon % 360) + 360) % 360;
+      const totalMin = norm * 60.0;
+
+      const signIdx = Math.floor(totalMin / 1800);        // 0 ~ 11
+      const nakIdx = Math.floor(totalMin / 800);          // 0 ~ 26
+      const padaIdx = Math.floor(totalMin / 200);         // 0 ~ 107
+      const nakPada = (padaIdx % 4) + 1;                  // 1 ~ 4
+      const d9SignIdx = padaIdx % 12;                     // 0 ~ 11
+      const signPada = (padaIdx % 9) + 1;                 // 1 ~ 9
+
+      const nakObj = NAKSHATRAS[nakIdx];
+      const purusharthaMap = {
+        1: { label: "第 1 足・法 (Dharma)", desc: "開創名分、正道啟動，利於建立規則但見財較慢", tone: "text-amber-300" },
+        2: { label: "第 2 足・利 (Artha)", desc: "物質落實、求財最吉，利於商業交易與實質獲利", tone: "text-emerald-400" },
+        3: { label: "第 3 足・欲 (Kama)", desc: "人際互動、擴張協商，過程熱鬧但變數與口舌多", tone: "text-cyan-300" },
+        4: { label: "第 4 足・解脫 (Moksha)", desc: "能量內收、收尾終結，利結案療癒；主動開創易無疾而終", tone: "text-rose-400" }
+      };
+
+      // Gandanta 危足 (0, 35, 36, 71, 72, 107)
+      const isGandanta = [0, 35, 36, 71, 72, 107].includes(padaIdx);
+
+      // Pushkara 吉足 (火象第7,9足 / 地象第3,5足 / 風象第6,8足 / 水象第1,3足)
+      const element = SIGNS[signIdx].element;
+      const pushkaraMap = { 0: [7, 9], 1: [3, 5], 2: [6, 8], 3: [1, 3] };
+      const isPushkara = pushkaraMap[element].includes(signPada);
+
+      // Vargottama 同宮強勢足
+      const isVargottama = (signIdx === d9SignIdx);
+
+      // 若有傳入行星名稱，判斷其在 D9 的廟旺落陷
+      let d9Dignity = "平性常態";
+      let d9Score = 0;
+      if (planetName && DIGNITY_RULES[planetName]) {
+        const rule = DIGNITY_RULES[planetName];
+        if (rule.exalt.includes(d9SignIdx)) { d9Dignity = "D9 廟旺 (極強)"; d9Score = 2; }
+        else if (rule.own.includes(d9SignIdx)) { d9Dignity = "D9 入廟本垣 (穩固)"; d9Score = 1; }
+        else if (rule.debil.includes(d9SignIdx)) { d9Dignity = "D9 落陷受制 (外強中乾)"; d9Score = -2; }
+      }
+
+      return {
+        lon: norm,
+        lonStr: formatLon(norm),
+        signIdx,
+        signName: SIGNS[signIdx].name,
+        nakIdx,
+        nakObj,
+        lord: nakObj.lord,
+        padaIdx: padaIdx + 1,
+        nakPada,
+        purushartha: purusharthaMap[nakPada],
+        d9SignIdx,
+        d9SignName: SIGNS[d9SignIdx].name,
+        isGandanta,
+        isPushkara,
+        isVargottama,
+        d9Dignity,
+        d9Score
+      };
+    }
+
+    function traceDispositorChain(startLord) {
+      const steps = [];
+      const visited = new Set();
+      let curr = startLord;
+      let status = "normal";
+      let endPlanet = startLord;
+
+      while (true) {
+        const pLon = planetDegrees[curr];
+        const info = analyzePoint(pLon, curr);
+        const nextLord = info.lord;
+
+        if (nextLord === curr) {
+          steps.push({
+            planet: curr,
+            nak: `${info.nakObj.cn}(${info.nakObj.sanskrit})`,
+            d9: info.d9SignName,
+            d9Dignity: info.d9Dignity,
+            tag: "自坐本宿・終局落地"
+          });
+          status = "self";
+          endPlanet = curr;
+          break;
+        }
+
+        if (visited.has(curr)) {
+          steps.push({
+            planet: curr,
+            nak: `${info.nakObj.cn}(${info.nakObj.sanskrit})`,
+            d9: info.d9SignName,
+            d9Dignity: info.d9Dignity,
+            tag: "形成閉環・循環拉扯"
+          });
+          status = "loop";
+          endPlanet = curr;
+          break;
+        }
+
+        visited.add(curr);
+        steps.push({
+          planet: curr,
+          nak: `${info.nakObj.cn}(${info.nakObj.sanskrit})`,
+          d9: info.d9SignName,
+          d9Dignity: info.d9Dignity,
+          tag: null
+        });
+        curr = nextLord;
+      }
+
+      return { steps, status, endPlanet };
+    }
+
+    // 印度占星正統 Vimshottari 120 年大限與次限精準演算法
+    function calculateVimshottariDasha(natalMoonLon, ageYears) {
+      const norm = ((natalMoonLon % 360) + 360) % 360;
+      const totalMin = norm * 60.0;
+      const birthNakIdx = Math.floor(totalMin / 800); // 0 ~ 26
+      const passedMinInNak = totalMin % 800;
+      const remFraction = (800 - passedMinInNak) / 800.0; // 首限剩餘比例
+
+      const firstLordIdx = birthNakIdx % 9;
+      const firstLord = NAK_LORDS[firstLordIdx];
+      const firstRemYears = VIMSHOTTARI_YEARS[firstLord] * remFraction;
+
+      let targetAge = Math.max(0, ageYears) % 120;
+      let currLordIdx = firstLordIdx;
+      let currNakIdx = birthNakIdx;
+      let elapsedInCurrentMaha = 0;
+      let currentMahaDuration = 0;
+
+      if (targetAge < firstRemYears) {
+        currentMahaDuration = VIMSHOTTARI_YEARS[firstLord];
+        const alreadyPassedBeforeBirth = currentMahaDuration * (1 - remFraction);
+        elapsedInCurrentMaha = alreadyPassedBeforeBirth + targetAge;
+      } else {
+        let remAge = targetAge - firstRemYears;
+        currLordIdx = (firstLordIdx + 1) % 9;
+        currNakIdx = (birthNakIdx + 1) % 27;
+
+        while (true) {
+          const dur = VIMSHOTTARI_YEARS[NAK_LORDS[currLordIdx]];
+          if (remAge < dur) {
+            currentMahaDuration = dur;
+            elapsedInCurrentMaha = remAge;
+            break;
+          }
+          remAge -= dur;
+          currLordIdx = (currLordIdx + 1) % 9;
+          currNakIdx = (currNakIdx + 1) % 27;
+        }
+      }
+
+      const mahaLord = NAK_LORDS[currLordIdx];
+      const progressRatio = elapsedInCurrentMaha / currentMahaDuration;
+
+      // 計算次限主 (Antardasha)
+      let antarAcc = 0;
+      let antarLord = mahaLord;
+      for (let i = 0; i < 9; i++) {
+        const subIdx = (currLordIdx + i) % 9;
+        const subPlanet = NAK_LORDS[subIdx];
+        const subDur = (currentMahaDuration * VIMSHOTTARI_YEARS[subPlanet]) / 120.0;
+        if (elapsedInCurrentMaha < antarAcc + subDur || i === 8) {
+          antarLord = subPlanet;
+          break;
+        }
+        antarAcc += subDur;
+      }
+
+      // 映射回該大限星宿的黃道刻度
+      const mappedLon = ((currNakIdx * 800 + progressRatio * 800) / 60.0) % 360;
+
+      return {
+        birthNakObj: NAKSHATRAS[birthNakIdx],
+        mahaLord,
+        antarLord,
+        mappedNakIdx: currNakIdx,
+        mappedNakObj: NAKSHATRAS[currNakIdx],
+        mappedLon,
+        progressPct: (progressRatio * 100).toFixed(1)
+      };
+    }
+
+    // =========================================================================
+    // 5. 執行完整計算與更新 UI
+    // =========================================================================
+    function runCalculation() {
+      // 更新輸入區各座標即時星宿標籤
+      const natalAscLon = getLonFromControls("natal-asc");
+      const natalMoonLon = getLonFromControls("natal-moon");
+      const eventAscLon = getLonFromControls("event-asc");
+
+      const natalAscPreview = analyzePoint(natalAscLon);
+      const natalMoonPreview = analyzePoint(natalMoonLon);
+      const eventAscPreview = analyzePoint(eventAscLon);
+
+      document.getElementById("natal-asc-nak-tag").textContent = `${natalAscPreview.nakObj.cn} (${natalAscPreview.lord}度・第${natalAscPreview.nakPada}足)`;
+      document.getElementById("natal-moon-nak-tag").textContent = `${natalMoonPreview.nakObj.cn} (${natalMoonPreview.lord}度・第${natalMoonPreview.nakPada}足)`;
+      document.getElementById("event-asc-nak-tag").textContent = `${eventAscPreview.nakObj.cn} (${eventAscPreview.lord}度・第${eventAscPreview.nakPada}足)`;
+
+      // 更新九曜星宿小標籤
+      NINE_PLANETS.forEach((p, idx) => {
+        const info = analyzePoint(planetDegrees[p]);
+        const el = document.getElementById(`p-nak-preview-${idx}`);
+        if (el) el.textContent = `${info.nakObj.cn}(${info.lord}度)`;
+      });
+
+      const eventMoonInfo = analyzePoint(planetDegrees["月亮"]);
+      const moonBadge = document.getElementById("event-moon-quick-badge");
+      if (moonBadge) {
+        moonBadge.textContent = `事件月亮：${eventMoonInfo.lonStr}・${eventMoonInfo.nakObj.cn}(${eventMoonInfo.lord}度)`;
+      }
+
+      const age = parseFloat(document.getElementById("event-age").value) || 0;
+
+      let natalInfo, eventInfo, starA, starB;
+      let natalPadaInfo;
+      let subdashaText = "";
+
+      if (calcMode === "asc") {
+        // 模式一：上升命度行限 + 事件上升點
+        const rateMin = parseFloat(document.getElementById("rate-mode").value) || 180;
+        const progressedMin = (natalAscLon * 60.0 + age * rateMin) % 21600;
+        const natalProgLon = progressedMin / 60.0;
+
+        natalInfo = analyzePoint(natalProgLon);
+        natalPadaInfo = natalInfo;
+        eventInfo = eventAscPreview;
+        starA = natalInfo.lord;
+        starB = eventInfo.lord;
+      } else {
+        // 模式二：本命月宿 Vimshottari 大限 + 流年事件月宿
+        const dasha = calculateVimshottariDasha(natalMoonLon, age);
+        natalInfo = analyzePoint(dasha.mappedLon);
+        natalPadaInfo = natalMoonPreview; // 本命出生月宿的 108 足底盤
+        eventInfo = eventMoonInfo;        // 事件盤月亮所在星宿
+        starA = dasha.mahaLord;
+        starB = eventInfo.lord;
+        subdashaText = `出生月宿：${dasha.birthNakObj.cn} ｜ 當前大限進度 ${dasha.progressPct}% ｜ 次限主：${dasha.antarLord}`;
+      }
+
+      // 渲染步驟 1
+      document.getElementById("res-natal-lon").textContent = natalInfo.lonStr;
+      document.getElementById("res-natal-nak").textContent = `${natalInfo.nakObj.cn} (${natalInfo.nakObj.sanskrit})`;
+      const subEl = document.getElementById("res-natal-subdasha");
+      if (subdashaText) {
+        subEl.textContent = subdashaText;
+        subEl.classList.remove("hidden");
+      } else {
+        subEl.classList.add("hidden");
+      }
+
+      document.getElementById("res-star-a").textContent = starA;
+      document.getElementById("res-star-a").className = `text-base font-bold ${PLANET_NATURE[starA].color}`;
+      document.getElementById("res-natal-meaning").textContent = natalInfo.nakObj.meaning;
+      document.getElementById("res-natal-body").textContent = natalInfo.nakObj.body;
+
+      document.getElementById("res-event-lon").textContent = eventInfo.lonStr;
+      document.getElementById("res-event-nak").textContent = `${eventInfo.nakObj.cn} (${eventInfo.nakObj.sanskrit})`;
+      document.getElementById("res-star-b").textContent = starB;
+      document.getElementById("res-star-b").className = `text-base font-bold ${PLANET_NATURE[starB].color}`;
+      document.getElementById("res-event-meaning").textContent = eventInfo.nakObj.meaning;
+      document.getElementById("res-event-body").textContent = eventInfo.nakObj.body;
+
+      // 渲染步驟 2 (108足)
+      renderPadaCard("natal", natalPadaInfo);
+      renderPadaCard("event", eventInfo);
+
+      // 檢查 Star A 與 Star B 自身在事件盤中的 D9 狀態
+      const starAEventInfo = analyzePoint(planetDegrees[starA], starA);
+      const starBEventInfo = analyzePoint(planetDegrees[starB], starB);
+
+      const roleALabel = calcMode === "asc" ? "本命限度主" : "本命大限主";
+      const roleBLabel = calcMode === "asc" ? "事件上升宿主" : "事件月宿主";
+
+      document.getElementById("res-lords-d9-status").innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span>• ${roleALabel} <strong>${starA}</strong> 在事件盤落 <strong>${starAEventInfo.nakObj.cn}</strong>（${starAEventInfo.nakObj.meaning.split('、')[0]}｜D9 ${starAEventInfo.d9SignName}）：</span>
+          <span class="font-semibold ${starAEventInfo.d9Score < 0 ? 'text-rose-400' : (starAEventInfo.d9Score > 0 ? 'text-emerald-400' : 'text-slate-200')}">${starAEventInfo.d9Dignity}</span>
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span>• ${roleBLabel} <strong>${starB}</strong> 在事件盤落 <strong>${starBEventInfo.nakObj.cn}</strong>（${starBEventInfo.nakObj.meaning.split('、')[0]}｜D9 ${starBEventInfo.d9SignName}）：</span>
+          <span class="font-semibold ${starBEventInfo.d9Score < 0 ? 'text-rose-400' : (starBEventInfo.d9Score > 0 ? 'text-emerald-400' : 'text-slate-200')}">${starBEventInfo.d9Dignity}</span>
+        </div>
+      `;
+
+      // 渲染步驟 3 (九曜宿主鏈)
+      const chainA = traceDispositorChain(starA);
+      const chainB = traceDispositorChain(starB);
+
+      renderChainNodes("chain-a-nodes", "chain-a-summary", chainA);
+      renderChainNodes("chain-b-nodes", "chain-b-summary", chainB);
+
+      const convBadge = document.getElementById("res-chain-convergence");
+      if (chainA.endPlanet === chainB.endPlanet) {
+        convBadge.textContent = `✨ 雙鏈完美匯聚於【${chainA.endPlanet}】（體用共振・應期極強）`;
+        convBadge.className = "text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/50 text-emerald-300";
+      } else {
+        convBadge.textContent = `⚡ 雙鏈分流：體歸【${chainA.endPlanet}】 / 用歸【${chainB.endPlanet}】`;
+        convBadge.className = "text-xs font-medium px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-200";
+      }
+
+      // 渲染步驟 4 (綜合報告)
+      generateFinalReport(natalInfo, eventInfo, starAEventInfo, starBEventInfo, chainA, chainB);
+    }
+
+    function renderPadaCard(prefix, info) {
+      document.getElementById(`res-${prefix}-pada-num`).textContent = `第 ${info.padaIdx} / 108 足`;
+      const purEl = document.getElementById(`res-${prefix}-purushartha`);
+      purEl.textContent = info.purushartha.label;
+      purEl.className = `text-sm font-bold ${info.purushartha.tone}`;
+      document.getElementById(`res-${prefix}-d9`).textContent = `九分盤 D9 落點：${info.d9SignName}（${info.purushartha.desc}）`;
+
+      const badgesEl = document.getElementById(`res-${prefix}-pada-badges`);
+      badgesEl.innerHTML = "";
+
+      if (info.isGandanta) {
+        badgesEl.innerHTML += `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-500/25 text-rose-300 border border-rose-500/50">⚠️ Gandanta 水火危足</span>`;
+      }
+      if (info.isPushkara) {
+        badgesEl.innerHTML += `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/25 text-emerald-300 border border-emerald-500/50">🌟 Pushkara 滋養吉足</span>`;
+      }
+      if (info.isVargottama) {
+        badgesEl.innerHTML += `<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-500/25 text-amber-300 border border-amber-500/50">👑 Vargottama 同宮強勢足</span>`;
+      }
+      if (!info.isGandanta && !info.isPushkara && !info.isVargottama) {
+        badgesEl.innerHTML += `<span class="px-2 py-0.5 rounded text-[11px] bg-slate-800 text-slate-400 border border-slate-700">常態刻度足</span>`;
+      }
+    }
+
+    function renderChainNodes(containerId, summaryId, chainObj) {
+      const container = document.getElementById(containerId);
+      const summary = document.getElementById(summaryId);
+      container.innerHTML = "";
+
+      summary.textContent = `共 ${chainObj.steps.length} 步 ➔ ${chainObj.status === 'self' ? '自坐本宿落地' : '形成循環閉環'}`;
+
+      chainObj.steps.forEach((step, i) => {
+        const pStyle = PLANET_NATURE[step.planet];
+        const node = document.createElement("div");
+        node.className = `flex flex-col px-3 py-2 rounded-lg border ${step.tag ? 'bg-slate-800/95 border-gold/60 shadow-md shadow-gold/10' : 'bg-nebula border-slate-700'}`;
+        node.innerHTML = `
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs font-bold ${pStyle.color}">${step.planet}</span>
+            <span class="text-[10px] text-slate-400">落 ${step.nak}</span>
+          </div>
+          <div class="text-[10px] text-slate-300 mt-0.5">D9 ${step.d9}</div>
+          ${step.tag ? `<span class="mt-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-gold/20 text-goldLight">${step.tag}</span>` : ''}
+        `;
+        container.appendChild(node);
+
+        if (i < chainObj.steps.length - 1) {
+          const arrow = document.createElement("span");
+          arrow.className = "text-gold font-bold text-sm px-0.5";
+          arrow.textContent = "➔";
+          container.appendChild(arrow);
+        }
+      });
+    }
+
+    function generateFinalReport(natalInfo, eventInfo, starAInfo, starBInfo, chainA, chainB) {
+      const starA = natalInfo.lord;
+      const starB = eventInfo.lord;
+
+      // 1. 檢查流年填實 (Transit Hit)
+      const transitHits = [];
+      NINE_PLANETS.forEach(p => {
+        if (calcMode === "moon" && p === "月亮") return;
+        const pInfo = analyzePoint(planetDegrees[p]);
+        if (pInfo.nakIdx === natalInfo.nakIdx) {
+          transitHits.push(`${p}(${PLANET_NATURE[p].type})`);
+        }
+      });
+
+      // 2. 評分與斷語邏輯
+      let score = 50;
+      const notes = [];
+      const eventPointName = calcMode === "asc" ? "事件上升點" : "事件盤月亮";
+
+      if (starA === starB) {
+        score += 15;
+        notes.push(`<strong>體用同星（${starA}）：</strong>本命大運與當下事件主星合一，屬於宿命級別的強烈應期。`);
+      } else if (chainA.endPlanet === chainB.endPlanet) {
+        score += 12;
+        notes.push(`<strong>雙鏈匯聚於【${chainA.endPlanet}】：</strong>大運背景與當下事件最終導向同一股能量，事體脈絡清晰。`);
+      }
+
+      const endBNature = PLANET_NATURE[chainB.endPlanet].type;
+      if (endBNature.includes("吉")) {
+        score += 18;
+        notes.push(`<strong>事件終局落吉星（${chainB.endPlanet}）：</strong>宿主鏈最終收斂於吉星，結果具備實質收穫與正向發展。`);
+      } else if (endBNature.includes("煞") || endBNature.includes("凶")) {
+        score -= 15;
+        notes.push(`<strong>事件終局落煞星（${chainB.endPlanet}）：</strong>宿主鏈最終導向凶煞，過程易有阻滯、損耗或突發波折。`);
+      }
+
+      if (eventInfo.isGandanta) {
+        score -= 25;
+        notes.push(`<span class="text-rose-400 font-bold">⚠️ 觸發 Gandanta 水火危足警報：</span>${eventPointName}落於水火交界斷裂帶，發動初期極易遭遇意外變數或情緒衝擊，擇時應堅決避開！`);
+      }
+      if (eventInfo.isPushkara) {
+        score += 15;
+        notes.push(`<span class="text-emerald-400 font-bold">🌟 觸發 Pushkara 滋養大吉足：</span>${eventPointName}得滋養吉足托底，具備逢凶化吉、貴人相助的修復能量。`);
+      }
+      if (eventInfo.nakPada === 4) {
+        score -= 10;
+        notes.push(`<span class="text-rose-300 font-bold">第 4 足（解脫足）提醒：</span>事件落於第 4 足，利於結案、療癒、斷捨離；若用於主動投資開創，易有「無疾而終」之象。`);
+      } else if (eventInfo.nakPada === 2) {
+        score += 10;
+        notes.push(`<span class="text-emerald-300 font-bold">第 2 足（利足）加持：</span>事件落於物質財富之足，非常有利於商業談判、求財與資源落實。`);
+      }
+
+      if (starBInfo.d9Score < 0) {
+        score -= 15;
+        notes.push(`<span class="text-rose-300">D9 落陷預警：</span>${calcMode === "asc" ? "事件上升宿主" : "事件月宿主"} ${starBInfo.lord} 在九分盤落陷，謹防「表面風光、實質條件不足」的翻盤風險。`);
+      }
+
+      const badge = document.getElementById("res-overall-verdict-badge");
+      if (eventInfo.isGandanta || score < 35) {
+        badge.textContent = `凶象預警・阻滯較大 (${Math.max(10, score)}分)`;
+        badge.className = "px-3 py-1 rounded-lg text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/50";
+      } else if (score >= 65) {
+        badge.textContent = `吉兆成局・順水推舟 (${Math.min(98, score)}分)`;
+        badge.className = "px-3 py-1 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/50";
+      } else {
+        badge.textContent = `吉凶參半・審慎推進 (${score}分)`;
+        badge.className = "px-3 py-1 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/50";
+      }
+
+      const reportContainer = document.getElementById("res-final-report");
+      reportContainer.innerHTML = `
+        <div class="bg-void/85 border border-slate-700 rounded-xl p-4 space-y-2">
+          <div class="text-xs font-bold text-goldLight border-b border-slate-800 pb-1.5">📌 核心吉凶與宿主鏈診斷</div>
+          <ul class="space-y-1.5 text-xs text-slate-300 leading-relaxed">
+            ${notes.map(n => `<li>• ${n}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div class="bg-void/85 border border-slate-700 rounded-xl p-4 space-y-2">
+          <div class="text-xs font-bold text-cyan-300 border-b border-slate-800 pb-1.5">⏱️ 星宿象意、流年填實與應期</div>
+          <div class="text-xs text-slate-300 leading-relaxed space-y-2">
+            <p><strong>體宿核心象意（${natalInfo.nakObj.cn}）：</strong><span class="text-amber-200">${natalInfo.nakObj.meaning}</span></p>
+            <p><strong>用宿核心象意（${eventInfo.nakObj.cn}）：</strong><span class="text-cyan-200">${eventInfo.nakObj.meaning}</span></p>
+            <p><strong>事件盤飛入同宿星曜（填實）：</strong><br/>
+              ${transitHits.length > 0 
+                ? `<span class="text-amber-300 font-bold">🔥 觸發填實！${transitHits.join('、')} 正好飛入限度宿內，事件能量直接引爆。</span>` 
+                : `<span class="text-slate-400">無其他流年星曜直接飛入限度宿，事件主要由「${eventPointName}」與「宿主鏈」間接牽動。</span>`}
+            </p>
+            <p><strong>距離出宿交界剩餘度數：</strong>
+              本命游標距下宿還有 <span class="font-mono text-goldLight">${(((natalInfo.nakIdx + 1) * 800 - natalInfo.lon * 60) / 60).toFixed(2)}°</span>；
+              ${eventPointName}距下宿還有 <span class="font-mono text-cyan-300">${(((eventInfo.nakIdx + 1) * 800 - eventInfo.lon * 60) / 60).toFixed(2)}°</span>。
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-void/85 border border-slate-700 rounded-xl p-4 space-y-2">
+          <div class="text-xs font-bold text-rose-300 border-b border-slate-800 pb-1.5">🩺 疾厄與身體部位應象</div>
+          <div class="text-xs text-slate-300 leading-relaxed space-y-2">
+            <p><strong>本命大運易感部位（${natalInfo.nakObj.cn}）：</strong><br/>
+              <span class="text-amber-200">${natalInfo.nakObj.body}</span>
+            </p>
+            <p><strong>當下事件引動部位（${eventInfo.nakObj.cn}）：</strong><br/>
+              <span class="text-cyan-200">${eventInfo.nakObj.body}</span>
+            </p>
+            <p class="text-[11px] text-slate-400 pt-1 border-t border-slate-800">
+              ※ 若占問健康或遇煞星填實，火羅主急性發炎外傷；土計主慢性瘀阻寒濕；水風主神經循環失調。
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 6. 分頁切換與 27 宿速查表渲染
+    // =========================================================================
+    function switchTab(tabName) {
+      ["calc", "ref", "sop"].forEach(t => {
+        document.getElementById(`view-${t}`).classList.toggle("hidden", t !== tabName);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        if (t === tabName) {
+          btn.classList.add("tab-active");
+          btn.classList.remove("bg-nebula/60", "text-slate-300");
+        } else {
+          btn.classList.remove("tab-active");
+          btn.classList.add("bg-nebula/60", "text-slate-300");
+        }
+      });
+    }
+
+    function renderReferenceTable() {
+      const kw = (document.getElementById("nak-search").value || "").trim().toLowerCase();
+      const tbody = document.getElementById("nak-ref-tbody");
+      tbody.innerHTML = "";
+
+      NAKSHATRAS.forEach(nak => {
+        const startMin = nak.idx * 800;
+        const endMin = (nak.idx + 1) * 800;
+        const rangeStr = `${formatLon(startMin / 60)} ~ ${formatLon(endMin / 60)}`;
+        const searchStr = `${nak.cn} ${nak.sanskrit} ${nak.lord} ${nak.meaning} ${nak.body} ${rangeStr} ${nak.nature}`.toLowerCase();
+        if (kw && !searchStr.includes(kw)) return;
+
+        const pStyle = PLANET_NATURE[nak.lord];
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-800/60 transition";
+        tr.innerHTML = `
+          <td class="py-3 px-3 font-mono text-slate-400">${nak.idx + 1}</td>
+          <td class="py-3 px-3 font-bold text-white">
+            ${nak.cn} <span class="text-xs font-normal text-slate-400">(${nak.sanskrit})</span>
+            <div class="text-[11px] font-normal text-slate-400 mt-0.5">${nak.nature}</div>
+          </td>
+          <td class="py-3 px-3 font-mono text-xs text-slate-300">${rangeStr}</td>
+          <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-xs font-bold border ${pStyle.badge}">${nak.lord}</span></td>
+          <td class="py-3 px-3 text-xs text-cyan-200/95 leading-relaxed">${nak.meaning}</td>
+          <td class="py-3 px-3 text-xs text-amber-200/90 leading-relaxed">${nak.body}</td>
+          <td class="py-3 px-3 text-right">
+            <button onclick="openPadaModal(${nak.idx})" class="px-2.5 py-1 rounded bg-gold/15 hover:bg-gold/30 text-goldLight border border-gold/30 text-xs transition cursor-pointer">
+              查看 4 足
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openPadaModal(nakIdx) {
+      const nak = NAKSHATRAS[nakIdx];
+      document.getElementById("modal-title").textContent = `${nak.cn} (${nak.sanskrit}) — 度主：${nak.lord}｜108足明細`;
+      const content = document.getElementById("modal-content");
+      content.innerHTML = `
+        <div class="p-3 rounded-lg bg-void/80 border border-slate-700 text-xs text-slate-300 space-y-1">
+          <div><strong>27宿核心含義：</strong><span class="text-cyan-200">${nak.meaning}</span></div>
+          <div><strong>對應身體部位：</strong><span class="text-amber-300">${nak.body}</span> ｜ <strong>星宿性質：</strong>${nak.nature}</div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          ${[0, 1, 2, 3].map(pOffset => {
+            const midLon = (nakIdx * 800 + pOffset * 200 + 100) / 60;
+            const startStr = formatLon((nakIdx * 800 + pOffset * 200) / 60);
+            const endStr = formatLon((nakIdx * 800 + (pOffset + 1) * 200) / 60);
+            const info = analyzePoint(midLon);
+            return `
+              <div class="p-3 rounded-xl bg-nebula border border-slate-700 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-goldLight">第 ${pOffset + 1} 足 (全局第 ${info.padaIdx} 足)</span>
+                  <span class="font-mono text-[11px] text-slate-400">${startStr} ~ ${endStr}</span>
+                </div>
+                <div class="text-xs font-semibold ${info.purushartha.tone}">${info.purushartha.label}</div>
+                <div class="text-xs text-slate-300">九分盤 D9 星座：<strong>${info.d9SignName}</strong>（主星：${SIGNS[info.d9SignIdx].lord}）</div>
+                <div class="text-[11px] text-slate-400">${info.purushartha.desc}</div>
+                <div class="pt-1 flex flex-wrap gap-1">
+                  ${info.isGandanta ? '<span class="px-1.5 py-0.5 rounded text-[10px] bg-rose-500/25 text-rose-300 border border-rose-500/40">⚠️ Gandanta 水火危足</span>' : ''}
+                  ${info.isPushkara ? '<span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-500/25 text-emerald-300 border border-emerald-500/40">🌟 Pushkara 滋養吉足</span>' : ''}
+                  ${info.isVargottama ? '<span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/25 text-amber-300 border border-amber-500/40">👑 Vargottama 同宮足</span>' : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+      document.getElementById("pada-modal").classList.remove("hidden");
+    }
+
+    function closePadaModal() {
+      document.getElementById("pada-modal").classList.add("hidden");
+    }
+
+    window.addEventListener("DOMContentLoaded", initApp);
+  </script>
+</body>
+</html>
